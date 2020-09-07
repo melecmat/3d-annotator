@@ -1,0 +1,162 @@
+<!-- CAN REMOVE THIS DOCUMENT -- JUST TRYING OUT A FEW THINGS-->
+
+<!DOCTYPE html>
+<title>aframe-arrow-component example</title>
+<script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+
+<!--<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
+<script src="https://threejs.org/examples/js/controls/TransformControls.js"></script>-->
+<!--<script src="javascript_aframe/three.min.js"></script>-->
+<script src="javascript_aframe/TransformControls.js"></script>
+
+<script >
+    if (typeof AFRAME === "undefined") {
+        throw "Component attempted to register before AFRAME was available.";
+    }
+    
+    AFRAME.registerComponent("arrow", {
+        schema: {
+            direction: {
+                type: "vec3",
+                default: {
+                    x: 1,
+                    y: 0,
+                    z: 0
+                }
+            },
+            length: {
+                type: "number"
+            },
+            color: {
+                type: "color",
+                default: "#ff0"
+            },
+            headLength: {
+                type: "number"
+            },
+            headWidth: {
+                type: "number"
+            }
+        },
+        init: function () {
+            var data = this.data;
+            var direction = new THREE.Vector3(data.direction.x, data.direction.y, data.direction.z);
+            var length = data.length || direction.length();
+            var headLength = data.headLength || length * .2;
+            var headWidth = data.headWidth || headLength * .2;
+            var color = new THREE.Color(data.color);
+            this.arrow = new THREE.ArrowHelper(direction.normalize(), new THREE.Vector3(), length, color, headLength, headWidth);
+            this.el.setObject3D("arrow", this.arrow);
+        },
+        update: function (oldData) {
+            var data = this.data;
+            var diff = AFRAME.utils.diff(data, oldData);
+            if ("color" in diff) {
+                this.arrow.setColor(new THREE.Color(data.color));
+            }
+            var length;
+            if ("direction" in diff) {
+                var direction = new THREE.Vector3(data.direction.x, data.direction.y, data.direction.z);
+                length = direction.length();
+                this.arrow.setDirection(direction.normalize());
+            }
+            if ("direction" in diff && typeof data.length === "undefined" || "length" in diff || "headLength" in diff || "headWidth" in diff) {
+                length = data.length || length;
+                var headLength = data.headLength || length * .2;
+                var headWidth = data.headWidth || headLength * .2;
+                this.arrow.setLength(length, headLength, headWidth);
+            }
+        }
+    });
+
+
+</script>
+
+<script>
+    AFRAME.registerComponent("dragndrop", {
+        init: function() {
+          this.dist = null
+          this.dir = new THREE.Vector3()
+      
+          this.scene = this.el.sceneEl
+          this.camera = this.scene.camera.el
+      
+          this.el.addEventListener("mousedown", e =>{
+            // update the base distance between the cursor to the object
+            this.dist = this.el.object3D.position.clone()
+              .sub(this.camera.object3D.position).length()
+      
+            this.dir.copy(this.scene.getAttribute("raycaster").direction)
+      
+            this.el.addState("being-dragged")
+          })
+      
+          document.addEventListener("mousemove", () =>{
+            // update the direction from raycaster coponent
+            this.dir.copy(this.scene.getAttribute("raycaster").direction)
+          })
+      
+          this.el.addEventListener("click", e=> {
+            // complete the drag when click completed
+            this.el.removeState("being-dragged")
+          })
+      
+        },
+        tick: function() {
+          // only move it when certain state is meet
+          if (this.el.is('being-dragged')) {
+            var target = this.camera.object3D.position.clone()
+              .add(this.dir.multiplyScalar(this.dist))
+      
+            this.el.object3D.copy(target)
+          }
+        }
+      })
+</script>
+
+<script>
+    //var TransformControls = require('transform_controls')(THREE);
+    AFRAME.registerComponent("transform-controls", {
+        init: function () {
+            var camera = document.querySelector("[camera]").getObject3D('camera');
+            var renderer = document.querySelector('a-scene').renderer;
+            var scene = document.querySelector('a-scene').object3D;
+            var control = new THREE.TransformControls(camera, renderer.domElement);
+            control.addEventListener('change', function (){ renderer.render(scene, camera)});
+            control.attach(this.el.object3D);
+            scene.add(control);
+            this.scene = scene;
+            this.control = control;
+        },
+
+        remove: function () {
+            this.control.detach();
+            this.scene.remove(this.control);
+        }
+    });
+
+</script>
+<body>
+<a-scene cursor="rayOrigin: mouse">
+    <a-entity camera id="camera" position="0 1.6 0"></a-entity>
+
+    <a-sphere transform-controls id="sphere" color="yellow" radius="1" position="0 1.5 -3"></a-sphere>
+    <!--<a-entity arrow position="0 1.6 -3"></a-entity>
+    <a-entity arrow="length: 2" position="0 1.7 -3"></a-entity>
+    <a-entity arrow="color: #000" position="0 1.8 -3"></a-entity>
+    <a-entity arrow="headLength: .5" position="0 1.9 -3"></a-entity>
+    <a-entity arrow="length: 3; headWidth: .5" position="0 2 -3"></a-entity>
+    <a-entity arrow="direction: 1 1 0" position="0 2.1 -3"></a-entity>
+    <a-entity arrow="direction: 1 -1 0; length: 1" position="0 1.5 -3"></a-entity>-->
+    <a-entity dragndrop arrow="direction: 1 0 0; length: 1; color: #f00" position="0 1.5 -3"></a-entity>
+    <a-entity arrow="direction: 0 1 0; length: 1; color: #0f0" position="0 1.5 -3"></a-entity>
+    <a-entity arrow="direction: 0 0 1; length: 1; color: #00f" position="0 1.5 -3"></a-entity>
+
+    <script>
+        document.addEventListener("keydown", function(e) {
+            
+                document.getElementById("sphere").removeAttribute("transform-controls");
+            
+        })
+    </script>
+</a-scene>

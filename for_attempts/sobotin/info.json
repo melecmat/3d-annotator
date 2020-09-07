@@ -1,0 +1,25 @@
+{
+    "title": "Mauzoleum rodiny Kleinů v Sobotíně",
+    "player": {
+        "orbit_control": true,
+        "model_src": "",
+        "qualities": [
+            {
+                "model_sr" : "sobotin/sobotin_no_grass.glb",
+                "file_size" : "80 MB",
+                "short_comment" : "Velmi detailní model, vyžaduje relativně výkonný počítač."
+            },
+            {
+                "model_sr" : "sobotin/sobotin_1_3.glb",
+                "file_size" : "50 MB",
+                "short_comment" : "Menší model, má však velké textury, některé mobily a počítače jej nemusí zvládnout."
+            }
+        ],
+        "camera_position": "8.918 -1.761 -6.096",
+        "model_scale": "30",
+        "model_rotation": "-90, 0, 0",
+        "backgound_color": "black"
+    },
+    "annotations": [],
+    "galleries": []
+}

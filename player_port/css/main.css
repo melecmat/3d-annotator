@@ -1,0 +1,237 @@
+.popup_heading {
+    font-size: 2em;
+    text-align: center;
+}
+
+
+.popup {
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 1rem;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+    z-index: 1005;
+    /* this puts the object in front */
+    display: none;
+    background-color: white;
+
+}
+
+.popup#annotation_window {
+    width: 95%;
+    max-height: 100%;
+    overflow:auto;
+    z-index: 1006;
+}
+
+#annotation_window div {
+    margin-top: 0.5em;
+}
+
+div#current_edited {
+    display: none;
+}
+
+.popup_body {
+    max-height: 25rem;
+    overflow: auto;
+}
+
+.back_icon {
+    margin: 0em;
+    cursor: pointer;
+    position: absolute;
+    left: 0em;
+    top: 0em;
+}
+
+.back_icon:hover {
+    background-color: gray;
+}
+
+.visible {
+    display: block;
+}
+
+.popup img {
+    max-width: 100%;
+}
+
+#loading_screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: black;
+}
+
+#joystick {
+    display:none;
+    position:fixed;
+    width:1rem;
+    height:1rem;
+    right:1rem;
+    bottom:4rem;
+    background-color:#c8c8c880;
+    z-index:1
+}
+
+#joystick.invisible {
+    display:none;
+}
+
+#home_button {
+    padding:0.5rem;
+    position:fixed;
+    width:2rem;
+    height:2rem;
+    left:2rem;
+    bottom:2rem;
+    z-index:1;
+    cursor: pointer;
+}
+
+#home_button:hover {
+    background-color: grey;
+}
+
+#model_choices {
+    z-index: 1008;
+    position: absolute;
+    bottom:5%;
+    background-color: white;
+    padding: 3em;
+    border-radius: 1em;
+    height: 35%;
+    overflow: auto;
+    left: 50%;
+    transform: translate(-50%);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#model_choices h3 {
+    text-align: center;
+}
+
+div.model_choice {
+    margin-top: 0.5em;
+    border-bottom: 0.1em solid #2196F3;
+}
+
+.wrong_input {
+    border: 2px solid red;
+}
+
+/** SCROLLBARS **/
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+/* Track */
+::-webkit-scrollbar-track {
+box-shadow: inset 0 0 5px grey;
+border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background:#2196F3;
+border-radius: 10px;
+}
+
+/* INPUTS */
+#model_choices input[type="radio"] {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+#model_choices label {
+    display: inline-block;
+    background-color: white;
+    padding: 10px 20px;
+    border: 2px solid #2196F3;
+    border-radius: 4px;
+}
+
+#model_choices input[type="radio"]:checked + label {
+    background-color:#2196F3;
+    color: white;
+}
+
+#model_choices input[type="radio"]:hover + label {
+    background-color:#2196F3;
+    color: white;
+}
+
+#model_choices input[type="submit"] {
+    font-size: 1.5em;
+    margin: 0.5em;
+    background-color: white;
+    border: 2px solid #2196F3;
+    border-radius: 4px;
+    margin:0.5em auto;
+    display:block;
+}
+
+#model_choices input[type="submit"]:hover {
+    background-color: #2196F3;
+    color: white;
+
+}
+
+.ed_button {
+    display:none;
+}
+
+button.ed_button.visible {
+    display: block;
+}
+
+#make_gallery {
+    display:none
+}
+
+#make_gallery.visible {
+    display:block
+}
+
+#edit_gallery {
+    display: none
+}
+#edit_gallery.visible {
+    display:block
+}
+
+
+/*MOBILE*/
+@media only screen and (pointer:coarse) {
+    .popup {
+        top: 0rem;
+        width: 90%;
+    }
+
+    .popup_body {
+        max-height: 70%;
+    }
+
+    #model_choices {
+        width: 70%;
+    }
+
+    #joystick {
+        position:fixed;
+        display:block;
+        width:100px;
+        height:100px;
+        right:1rem;
+        bottom:4rem;
+        background-color:#c8c8c880;
+        z-index:1
+    }
+}

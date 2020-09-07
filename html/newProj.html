@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <link href="../css/skeleton.css" rel="stylesheet">
+        <title> 3D Annotator - New Project </title>
+      </head>
+      <body>
+
+            <!-- TODO -- finish this, you will need to have everything multiple times for every language!!!! -->
+            <a href="../welcome_screen.html"> <button>Back</button></a>
+            <h1>New Project</h1>
+
+            <label>Name of project: <input type="text" id="proj_name"></label>
+
+            <button id="path_select"> Select project location </button>
+            <p id="proj_path"></p>
+
+            <h3>Choose project controls</h3>
+            <label> <input type="radio" name="proj_type" value="inside" checked> Inside</label>
+            <label> <input type="radio" name="proj_type" value="outside"> Outside</label>
+
+            <h3>Toggle languages</h3>
+            <!-- TODO -- will have to write some descriptive details here and everywhere -->
+            <div><label> <input type="checkbox" class="langtick" name="en" id="en"> English </label>  <span class="title" id="en_title"> Title: <input type="text"></span></div>
+            <div><label> <input type="checkbox" class="langtick" name="de" id="de"> German </label> <span class="title" id="de_title"> Title: <input type="text"></span></div>
+            <div><label> <input type="checkbox" class="langtick" name="cs" id="cs"> Czech </label> <span class="title" id="cs_title"> Title: <input type="text"></span></div>
+
+            <h3>Choose model</h3>
+            <p> 3D model can be of type .glb, .gltf or .obj. If you choose .obj model, it will be further optimised
+                  and transformed into .glb for use in the project (this operation may take some time).
+            </p>
+            <p> You can either select one model, or select multiple models of diferrent qualities.
+                  You should provide short description of individual qualities in each of your specified languages,
+                  for example how big they are, if older devices can handle them easily etc.    
+            </p>
+
+            <!-- selects models path -->
+            <div id="models">
+                  <div class="model_info">
+                        <button id="model_select1">Select model</button>
+                        <p id="model_name1" class="mod_name"></p>
+                        <label> Details about model quality (do not fill up if you have only one model): <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>
+                        <label> Size of model (in MB): <input type="number" id="model_size'+ curModNo + '" class="mod_siz"> </label>
+                  </div>               
+            </div>
+            <button id="add_model">Add another model (quality)</button>
+            
+            <button id="create">Create project</button>
+
+
+            <style>
+                  .title {
+                        visibility:hidden
+                  }
+            </style>
+            
+      </body>
+
+      <script>
+            const {ipcRenderer} = require('electron');
+            const {dialog} = require('electron').remote;
+            var curModNo = 1;
+
+            function selectModel (ev) {
+                  modelNo = ev.target.id.slice(-1);
+                  var pathProm = dialog.showOpenDialog({
+                        properties: ['openFile'],
+                        filters: [
+                              { name: '3D models', extensions: ['gltf', 'glb', 'obj'] }
+                        ]
+                  });
+                  pathProm.then(function(i) {
+                        var path = i.filePaths[0];
+                        console.log(path);
+                        if (path != undefined) 
+                              document.getElementById("model_name" + modelNo).innerHTML = path;
+                  });
+            }
+
+            function createNodeFromHtml(html) {
+                  var div = document.createElement("div");
+                  div.innerHTML = html.trim();
+                  return div.firstChild;
+            }
+
+            document.getElementById("model_select1").addEventListener("click", selectModel);
+
+            for (var el of document.getElementsByClassName("langtick")) {
+                  el.addEventListener("click", (evt) => {
+                        if (!evt.target.checked) document.getElementById(evt.target.id + "_title").style.visibility = "hidden";
+                        else document.getElementById(evt.target.id + "_title").style.visibility = "visible";
+                  });
+            }
+            
+            document.getElementById("path_select").addEventListener("click", function () {
+                  var pathProm = dialog.showOpenDialog({
+                        properties: ['openDirectory']
+                  });
+                  pathProm.then(function(i) {
+                        var path = i.filePaths[0];
+                        if (path != undefined) 
+                              document.getElementById("proj_path").innerHTML = path;
+                  });
+            });
+
+            document.getElementById("add_model").addEventListener("click", function () {
+                  curModNo++;
+                  var newNode = createNodeFromHtml('\
+                  <div>\
+                        <button id="model_select'+ curModNo +'" onclick="selectModel()">Select model</button>\
+                        <p id="model_name'+ curModNo +'" class="mod_name"></p>\
+                        <label> Details about model quality: <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>\
+                        <label> Size of model (in MB): <input type="number" id="model_size'+ curModNo + '" class="mod_siz"> </label>\
+                        <button id="remove'+ curModNo +'">Remove model</button>\
+                   </div>\
+                  ');
+                  document.getElementById("models").appendChild(newNode);
+                  document.getElementById("model_select" + curModNo).addEventListener("click", selectModel);
+                  document.getElementById('remove' + curModNo).addEventListener("click", function (e) {
+                        e.target.parentElement.remove();
+                  })
+            });
+
+            // send the user data via ipcRenderer -- have them checked 
+            document.getElementById("create").addEventListener("click", function () {
+                  ipcRenderer.send("create_proj", {
+                        name: document.getElementById("proj_name").innerText,
+                        path: document.getElementById("proj_path").innerText,
+                        type: document.querySelector('input[name="proj_type"]:checked').value,
+                        languages: document.querySelectorAll('input[type=checkbox]:checked').map(x => x.name),
+                        models: document.getElementsByClassName("model_info").map(x => {return {
+                              name: x.querySelector(".mod_name"),
+                              details: x.querySelector(".mod_det"),
+                              size: x.querySelector(".mod_siz")
+                        }})
+                  });
+            });
+
+      </script>
+</html>

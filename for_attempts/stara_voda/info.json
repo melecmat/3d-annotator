@@ -1,0 +1,241 @@
+{
+    "title": "Stará voda",
+    "path_name": "stara_voda",
+    "edit_mode": true,
+    "player": {
+        "orbit_control": false,
+        "model_src": "stara_voda/0_2uvs_textured_diff.glb",
+        "camera_position": "-0.388 -0.181 -0.515",
+        "camera_rotation": "-0.15 -2.62",
+        "model_scale": "30",
+        "model_rotation": "-90, 0, 0",
+        "backgound_color": "black"
+    },
+    "annotations": {
+        "uniqueID1": {
+            "heading": "Hlavní oltář sv. Anny a sv. Jakuba",
+            "text": "<p><strong>autor oltářního obrazu:</strong> Luigi Garzi</p><p><strong>datace:</strong> říjen 1686 - únor 1687</p><p>Biskup Karel II. Lichtenstein-Castelcorn jako ctižádostivý donátor zadal svému římskému agentovi Giovannimu Petignierovi, aby zajistil, že obraz hlavního oltáře starovodského kostela zhotoví nejlepší z tamějších malířů. Zakázku nakonec přijal ředitel římské Akademie sv. Lukáše Luigi Garzi, jehož práce máme dochovány například v kapli Cybo chrámu Santa Maria del Popolo v Římě. <br>V centru starovodského obrazu sedí na oblaku Panna Maria objímající Ježíška, obklopují je sv. Anna s Jáchymem, sv. Josef, sv. Karel Boromejský, jmenovec biskupův, a zemští patroni sv. Václav či sv. Cyril s Metodějem. Prostředníkem mezi Kristem a skupinou poutníků s dolní části obrazu je sv. Jakub Větší oděný do zeleného pláště. V pozadí zřejmě Garzi zpodobil horu Conero a před ní italské město Ancona, odkud byly do Staré Vody přeneseny ostatky sv. Anny.</p><p>Obraz byl v půli 19. století nahrazen kopií od Josefa Kristena z Moravské Berouna, která se nachází v kroměřížské kostele Blahoslavené Panny Marie. Originální plátno se nedochovalo.</p><p>Oltářní architektura vznikla během výstavby chrámu Giovannim Pietrem Tencalou v letech 1682-1688.</p>",
+            "position": "5.916 -4.428 7.788",
+            "id": "uniqueID1"
+        },
+        "uniqueID2": {
+            "heading": "",
+            "text": "<h3>Vítězný Kristus se sv. Annou.</h3><p>Nástropní malba.</p><h3>Smrt sv. Anny a Smrt sv. Jáchyma.</h3><p>V postranních lunetách.</p><p><strong>autor:</strong> Johann Klein</p><p><strong>datace:</strong> 1767</p><p>Tyto výjevy pocházejí z mladší fáze výstavby chrámu, kdy byl v letech 1765-1767 přestavován presbytář. Malby jsou silně poškozené či zcela zničené - zejména na evangelijní (levé) straně - což samozřejmě ztěžuje interpretaci výjevů. V klenbě se jedná o znázornění Vítězného Krista se svatou Annou a biblickým králem Davidem v oblacích. Pod klenbou byly v postranních lunetových výsečích zpodobeny protějškové výjevy smrti sv. Anny a na evangelijní straně sv. Jáchyma, jenž se nedochoval. V dvojici sakristií za nimi Klein navázal na tematiku rodičů Panny Marie, když zde ztvárnil jejich apoteózy.</p>",
+            "position": "2.433 -0.236 7.335",
+            "id": "uniqueID2"
+        },
+        "uniqueID3": {
+            "heading": "Štuková výzdoba v úrovni korunní římsy",
+            "text": " <p><strong>datace:</strong> 1682-1688</p> <p>V každém z rohů osmiúhelné chrámové lodi se nachází pilastr, jenž pod dolní hranou korunní římsy završuje volutová hlavice dekorovaná ovocným festonem a dvojicí andílčích hlaviček. Okřídlení putti se pak nad hlavicí opakují ve vlysu římsy. Ty zde střídají čtveřice akantových rozvilin a palmových ratolestí prostupujících korunou. Tento prvek můžeme chápat jako jistou oslavu mučednické smrti, jíž je palmový list symbolem a která se snad vztahuje k osobě sv. Jakuba Staršího.</p> <p> Dominantním prvkem štukové výzdoby je čtvero volutových kartuší evokujících lastury, jež jsou v lodi osově umístěny na vítězný oblouk a nad kruchtu, do kříže pak nad vstupy do bočních kaplí sv. Jáchyma a sv. Josefa. Každou kartuši flankuje dvojice ženských postav, pravděpodobně alegorií vzdělanosti a moudrosti. </p> <p>Figurám schází hlavy, často i končetiny; v některých případech jsou však atributy stále patrné. Jedná se zejména o knihy či svitky, případně o fragment palmové ratolesti. Vedle těchto ženských postav se staly oblíbeným terčem střelby vojáků i zmíněné dětské hlavičky andílků, z nichž téměř všechny jsou proměněny v morbidní torza.</p>",
+            "position": "2.774 0.696 2.922",
+            "id": "uniqueID3"
+        },
+        "uniqueID4": {
+            "heading": "Apoteóza sv. Anny, Jáchyma a sv. Jakuba Většího",
+            "text": "<p><strong>autor:</strong> Giovanni Carlone (?)</p> <p><strong>datace:</strong> 1683-1688</p><p> Ústředním námětem výzdoby chrámové lodi se stala rozsáhlá dramatická malba otevřeného nebe se světci, anděly a Bohem Otcem jako vládcem všehomíra. Před něj předstupuje ženská postava doprovázená dvojicí mužů, ovšem tito nejsou konkrétně atribuováni. Výjev nápadně připomíná scénu Nanebevzetí Panny Marie, čemuž však neodpovídají ikonografické detaily; takto dominantně umístěná malba by navíc tematicky nesouznila s patrociniem kostela. Pravděpodobně se tedy jedná o neobvyklý námět Apoteózy sv. Anny, spolu se sv. Jáchymem a sv. Jakubem Větším. Postava Boha Otce žehná zmíněným světcům i Ježíškovi, kterého v květu bílé lilie pozvedá jeden z andělů. Zřejmě se jedná o archanděla Gabriela, jenž drže lilii, symbol neposkvrněného početí, zvěstoval Bohorodičce příchod Spasitele skrze její osobu. Vedle Gabriela duje do trubky, evokující starořeckou salpinx, archanděl Michael, oděný  ve stylizovanou římskou zbroj značící jeho postavení velitele nebeského vojska. Identifikaci námětu ztěžuje špatný technický stav malby způsobený dlouhodobým zatékáním střechou i střelbou sovětských vojáků. </p>",
+            "position": "1.072 5.775 -1.926",
+            "id": "uniqueID4"
+        },
+        "uniqueID5": {
+            "heading": "Sv. Matouš",
+            "text": "<p> <b>autor:</b> Georg Fröml </p> <p> <b> datace:</b> 1796 </p> <p> Evangelista, zpodoben jako stařec s plnovousem, brkem do knihy zapisuje Boží slovo, které mu do pravého ucha šeptá anděl. </p> <p> Mladší nástěnná malba v jedné ze čtveřice nik chrámové lodi. Matoušova postava se nachází pod Alegorií Evropy.</p>",
+            "position": "4.744 -4.309 0.657",
+            "id": "uniqueID5"
+        },
+        "uniqueID6": {
+            "heading": "Sv. Marek",
+            "text": "<p> <strong>autor:</strong> Georg Fröml </p> <p> <strong> datace:</strong> 1796 </p> <p>Svatý Marek, žák apoštola Petra, jehož kázání sepsal ve své evangelium. Sedí s brkem v ruce nad rozvinutým svitkem a kalamářem, u nohou mu leží lev. Obrací se k Bohu v podobě Božího oka, aby vyslechl jeho slova a zaznamenal je. </p> <p>Mladší nástěnná malba v jedné ze čtveřice nik chrámové lodi. Markova postava se nachází pod Alegorií Asie.</p>",
+            "position": "-1.72 -4.208 4.713",
+            "id": "uniqueID6"
+        },
+        "uniqueID7": {
+            "heading": "Sv. Lukáš",
+            "text": "<p> <b>autor:</b> Georg Fröml </p> <p> <b> datace:</b> 1796 </p> <p>Tato malba je kompletně zničená, nacházela se v jedné ze čtveřice nik chrámové lodi, a to pod Alegorií Afriky. Původně seděl na volu, jenž je jako obětní zvíře jeho atributem. Jako ostatní evangelisté i on zapisoval Boží vnuknutí. V nebeské části výjevu se vznášely andílčí postavičky, zatímco na zemi ležela paleta se štětci, vztahující se k legendě, že namaloval podobu Panny Marie s Ježíškem, pročež se stal patronem malířů.</p>",
+            "position": "-6.084 -3.724 -2.306",
+            "id": "uniqueID7"
+        },
+        "uniqueID8": {
+            "heading": "Sv. Jan Evangelista",
+            "text": "<p><strong>autor:</strong> Georg Fröml</p> <p><strong>datace:</strong> 1796 </p> <p>Z malby se téměř nic nedochovalo. Sedící postava sv. Jana byla zobrazena při psaní, přičemž levou rukou si světec podpíral hlavu. Vedle něj stál jeho symbol orel, zde snad s kalamářem v zobáku. Nad hlavou evangelisty se vznášela dvojice andílčích hlaviček. <br></p>",
+            "position": "0.374 -3.995 -6.199",
+            "id": "uniqueID8"
+        },
+        "uniqueID9": {
+            "heading": "Alegorie Evropy",
+            "text": "<p><strong>autor: </strong>Carlo Passano (?)</p><p><strong>datace:</strong> kolem r. 1700 (?)</p><p>Nad nikami s vyobrazením evangelistů byla zpodobena ženská zosobnění čtyř tehdy známých světadílů: Evropy, Asie, Afriky a Ameriky. Předpokládá se, že jejich autorem je v archiváliích zmíněný malíř Carlo Passano. Pokud tomu tak skutečně je, vznikly v době na přelomu 17. a 18. století.</p><p>Do těchto maleb jsou zakomponované latinské verše, jejichž počáteční písmena dávají vzniknout jménu ANNA, což odráží rozšíření kultu sv. Anny (přeneseně i celé katolické církve) po celém světě.</p><p> </p><p>Alegorie Evropy přímo odkazuje ke klasické řecké báji o tom, jak Zeus v podobě býka unesl a svedl Európu, krásnou dceru krále Ugenora. Tento motiv je zobrazen v levé části kompozice, zatímco v pravé stojí Strom Olympu, na němž sedí Diův orel. Na stromě vlaje nápisová páska s veršem: “Arbor Olympi” (Strom Olympu), z nějž je navíc osamostatněno majuskulní “A” v samotném vrcholu malby, k němuž Európa vzhlíží.</p>",
+            "position": "3.769 -0.318 -0.579",
+            "id": "uniqueID9"
+        },
+        "uniqueID10": {
+            "heading": "Alegorie Asie",
+            "text": "<p><strong>autor:</strong> Carlo Passano (?)</p><p><strong>datace:</strong> kolem r. 1700 (?)</p><p>Nad nikami s vyobrazením evangelistů byla zpodobena ženská zosobnění čtyř tehdy známých světadílů: Evropy, Asie, Afriky a Ameriky. Předpokládá se, že jejich autorem je v archiváliích zmíněný malíř Carlo Passano. Pokud tomu tak skutečně je, vznikly v době na přelomu 17. a 18. století.</p><p>Do těchto maleb jsou zakomponované latinské verše, jejichž počáteční písmena dávají vzniknout jménu ANNA, což odráží rozšíření kultu sv. Anny (přeneseně i celé katolické církve) po celém světě.</p><p>Alegorie Asie sedí v bohatém, exoticky laděném šatu na pravé straně malby. U jejích nohou si přikleká postava andílka s rohem hojnosti, z něhož se sypou drahocenné šperky, odkazující na bájné bohatství Orientu. Vlevo ve stínu palmy odpočívá velbloud nesoucí truhlici, a to i se svým ozbrojeným doprovodem v podobě maura v turbanu, s lukem a toulcem šípů. Uprostřed v oblacích se vznáší verš: “Nemini negat” (nikomu neodpírá), z nějž je navíc osamostatněno majuskulní “N” v samotném vrcholu malby, k němuž alegorie Asie vzhlíží.</p>",
+            "position": "-2.393 -0.295 3.266",
+            "id": "uniqueID10"
+        },
+        "uniqueID11": {
+            "heading": "Alegorie Afriky",
+            "text": "<p><strong>autor:</strong> Carlo Passano (?)</p><p><strong>datace: </strong>kolem r. 1700 (?)</p><p>Nad nikami s vyobrazením evangelistů byla zpodobena ženská zosobnění čtyř tehdy známých světadílů: Evropy, Asie, Afriky a Ameriky. Předpokládá se, že jejich autorem je v archiváliích zmíněný malíř Carlo Passano. Pokud tomu tak skutečně je, vznikly v době na přelomu 17. a 18. století.</p><p>Do těchto maleb jsou zakomponované latinské verše, jejichž počáteční písmena dávají vzniknout jménu ANNA, což odráží rozšíření kultu sv. Anny (přeneseně i celé katolické církve) po celém světě.</p><p>        </p><p>Alegorie Afriky sedí v levé části kompozice na lvu, pod palmou na mořském břehu, přitom se opírá o sloní kel. Hlavu zdobí čelenka s pštrosími pery, její zlaté roucho zahaluje vše, až na snědá ňadra a paže. Levicí přitom spolu s dvojicí chlapců ukazuje na majuskulní “N” zářící na obloze. Pod ním se vznáší na nápisové pásce verš: “Nescia luti” (neznalá špíny). V dolní pravé partii výjevu se z moře vynořují korály a delfíni či velryby.</p>",
+            "position": "-5.153 -0.318 -1.177",
+            "id": "uniqueID11"
+        },
+        "uniqueID12": {
+            "heading": "Alegorie Ameriky",
+            "text": "<p><strong>autor:</strong> Carlo Passano (?)</p><p><strong>datace:</strong> kolem r. 1700 (?)</p><p>Nad nikami s vyobrazením evangelistů byla zpodobena ženská zosobnění čtyř tehdy známých světadílů: Evropy, Asie, Afriky a Ameriky. Předpokládá se, že jejich autorem je v archiváliích zmíněný malíř Carlo Passano. Pokud tomu tak skutečně je, vznikly v době na přelomu 17. a 18. století.</p><p>Do těchto maleb jsou zakomponované latinské verše, jejichž počáteční písmena dávají vzniknout jménu ANNA, což odráží rozšíření kultu sv. Anny (přeneseně i celé katolické církve) po celém světě.</p><p> </p><p>Alegorie Ameriky, oděná jako indiánská žena, sedí v pravé části výjevu na ještěru (aligátor?), pravicí pozdvihá hořící pochodeň, v levé ruce třímá oštěp. Za ní je v horní části znázorněna palma, v dolní partii dítě vytahující šípy z toulce k luku, který má pod nohama. Ve středu zobrazení se svíjí had, v levé části se z moře vynořuje najáda s perlami a tritón troubící na stylizovanou mušli. V oblacích se vznáší verš: “Arcet et abigit” (zapuzuje a odhání), z nějž je navíc osamostatněno majuskulní “A” v samotném vrcholu malby, k němuž alegorie Ameriky vzhlíží.</p>",
+            "position": "1.04 -0.332 -4.868",
+            "id": "uniqueID12"
+        },
+        "uniqueID13": {
+            "heading": "Dvanáctiletý Kristus v chrámu",
+            "text": "<p><strong>autor:</strong> Josef Kristen</p><p><strong>datace:</strong> 1873</p><p>V čelech výsečí neckové klenby, jež završuje chrámovou loď, je zpodobena čtveřice výjevů ze života Panny Marie. Zde, nad alegorií Evropy, se nacházel námět Dvanáctiletý Kristus v chrámu, dnes v podstatě kompletně zničený.</p><p>        </p><p>Celý čtyřdílný mariánský cyklus vytvořil v roce 1873 malíř Josef Kristen z Moravského Berouna, přičemž vedle Krista v chrámu celek sestává z tématů Zvěstování Panny Marie, Navštívení Panny Marie a Útěku do Egypta. Všechny malby jsou poškozeny zatékáním a nápisy psanými azbukou. <br></p>",
+            "position": "3.714 3.181 -0.701",
+            "id": "uniqueID13"
+        },
+        "uniqueID14": {
+            "heading": "Zvěstování Panny Marie",
+            "text": "<p><strong>autor:</strong> Josef Kristen</p><p><strong>datace:</strong> 1873</p><p>V čelech výsečí neckové klenby, jež završuje chrámovou loď, je zpodobena čtveřice výjevů ze života Panny Marie. Zde, nad alegorií Asie, se nachází téma Zvěstování Panny Marie. Klasický námět zobrazuje vlevo stojícího archanděla Gabriela s bílou lilií v levici, zatímco druhou ruku pozvedá k holubici Ducha Svatého v horní partii kompozice. Z oblaků se však po bocích vynořují další, fragmentárně dochované postavy. Vpravo se nad Pannou Marií objevuje dvojice andělů, na opačné straně pak sedící dětská postavička pozdvihující levou paži k Duchu Svatému. Může se jednat o dalšího andílka, avšak v úvahu přichází i neobvyklé zpodobení samotného Ježíška sestupujícího do matčina lůna. Bohorodička sedí nad otevřenou knihou u čtecího pultíku a se sepjatýma rukama pokorně přijímá Boží vůli o příchodu Spasitele skrze ni na Zemi. <br></p><p>        </p><p>Celý čtyřdílný mariánský cyklus vytvořil v roce 1873 malíř Josef Kristen z Moravského Berouna, přičemž vedle Zvěstování Panny Marie celek sestává z tématů Navštívení Panny Marie, Útěku do Egypta a Uvedení Ježíše do chrámu. Všechny malby jsou poškozeny zatékáním a nápisy psanými azbukou. <br></p>",
+            "position": "-2.427 2.994 3.037",
+            "id": "uniqueID14"
+        },
+        "uniqueID15": {
+            "heading": "Navštívení Panny Marie",
+            "text": "<p><strong>autor:</strong> Josef Kristen</p><p><strong>datace:</strong> 1873</p><p>V čelech výsečí neckové klenby, jež završuje chrámovou loď, je zpodobena čtveřice výjevů ze života Panny Marie. Zde, nad alegorií Afriky, se nachází námět Navštívení Panny Marie, která spolu se sv. Josefem přichází do domu své příbuzné sv. Alžběty. Objetí dvojice žen je zobrazeno ve středu výjevu, vpravo za Bohorodičkou stojí sv. Josef, zatímco z postavy sv. Zachariáše, Alžbětina manžela, se zachovala pouze paže. Původně byl vypodobněn vlevo v domovních dveřích, jak se vítá s Kristovým pěstounem Josefem.</p><p>        </p><p>Celý čtyřdílný mariánský cyklus vytvořil v roce 1873 malíř Josef Kristen z Moravského Berouna, přičemž vedle Navštívení celek sestává z tématů Zvěstování Panny Marie, Útěku do Egypta a Uvedení Ježíše do chrámu. Všechny malby jsou poškozeny zatékáním a nápisy psanými azbukou.</p>",
+            "position": "-4.979 3.208 -1.139",
+            "id": "uniqueID15"
+        },
+        "uniqueID16": {
+            "heading": "Útěk do Egypta",
+            "text": "<p><strong>autor:</strong> Josef Kristen</p><p><strong>datace: </strong>1873</p><p>V čelech výsečí neckové klenby, jež završuje chrámovou loď, je zpodobena čtveřice výjevů ze života Panny Marie. Zde, nad alegorií Ameriky, se nachází námět Útěku do Egypta. Z fragmentárně dochovaného výjevu lze vyčíst na oslu sedící postavu Bohorodičky v modrém plášti, zřejmě s Ježíškem v náručí. Za zvířetem stojící sv. Josef ukazuje levicí vpřed do dálky.</p><p>        </p><p>Celý čtyřdílný mariánský cyklus vytvořil v roce 1873 malíř Josef Kristen z Moravského Berouna, přičemž vedle Útěku do Egypta celek sestává z tématů Zvěstování Panny Marie, Navštívení Panny Marie a Uvedení Ježíše do chrámu. Všechny malby jsou poškozeny zatékáním a nápisy psanými azbukou. <br></p>",
+            "position": "1.084 3.034 -4.899",
+            "id": "uniqueID16"
+        },
+        "uniqueID17": {
+            "heading": "Narození Páně",
+            "text": "<p>Nástropní malba zobrazuje Svatou Rodinu s pastýřem klanícím se novorozenému Ježíškovi.</p>",
+            "position": "-6.166 0.329 2.523",
+            "id": "uniqueID18"
+        },
+        "uniqueID18": {
+            "heading": "Obětování Krista v chrámu",
+            "text": "<p>Nástropní malba, zničena vlivem zatékání střechou.</p>",
+            "position": "4.838 0.236 -4.268",
+            "id": "uniqueID18"
+        },
+        "uniqueID19": {
+            "heading": "Putti",
+            "text": "<p>Nad čtveřicí osových oken přímo pod klenbou se nacházely dekorativní štukové hlavičky andílků, zakomponované do listovce, jenž rámoval špalety.</p><p>Z části poškozeno či zcela zničeno vlivem zatékání do stavby.<br></p>",
+            "position": "2.603 4.862 -2.923"
+        },
+        "uniqueID20": {
+            "heading": "Putti",
+            "text": "<p>Nad čtveřicí osových oken přímo pod klenbou \nse nacházely dekorativní štukové hlavičky andílků, zakomponované do \nlistovce, jenž rámoval špalety.</p><p>Z části poškozeno či zcela zničeno vlivem zatékání do stavby.</p>",
+            "position": "-3.293 4.728 -5.115"
+        },
+        "uniqueID": {
+            "heading": "Kostel sv. Anny a sv Jakuba Většího",
+            "text": "<p>Stará Voda u města Libavá má velice starou \npoutní tradici sahající zřejmě do pozdního středověku. Kaple sv. Anny, \nv níž byla přechovávána milostná socha této světice, je prvně doložena \nroku 1529 a stávala u tehdy ještě dřevěného kostelíka sv. Jakuba \nVětšího. Součástí areálu byla i nedaleká Královská studánka se zázračnou\n vodou. Poutě a procesí již v 16. století do Staré Vody vedli olomoučtí \nminorité a později jezuité. Vzrůstající proslulost poutního místa \nvyvolala potřebu nového většího chrámu, k jehož realizaci došlo za \nbiskupa Karla z Lichtenštejna v letech 1681-1689. Biskup zadal projekt \npůvodem severoitalskému architektu Giovanni Pietro Tencallovi, v té době\n pracujícímu v jeho službách, který byl zároveň nejvýznamnějším a také \nnejplodnějším tvůrcem v oblasti architektury na Moravě poslední třetiny \n17. století. V roce 1690 předal biskup Karel vysvěcený kostel piaristům,\n kteří byli pověřeni výkonem duchovní správy a péčí o poutníky. Piaristé\n si posléze postavili naproti kostelu kolej, dokončenou v roce 1700. \nKostel má vysokou, kupolí zaklenutou loď na půdorysu protáhlého \noktogonu, k níž je do podélné osy přisazen vstupní rizalit se dvěma \nvěžemi po stranách a nižší presbyterium s oratořemi, které bylo \nprodlouženo a do dnešní hmoty upraveno v letech 1765-67. Pro kostel, \nkolej (kterou však piaristé opustili již v roce 1922) a obec samotnou \nměl fatální důsledky nejen odsun německého obyvatelstva po druhé světové\n válce, ale hlavně zřízení libavského vojenského újezdu v roce 1947. \nObec Stará Voda zcela zanikla a zbořeny byly rovněž piaristické budovy, \nvyhořelé ovšem už na jaře 1945. Z podkovovitě tvarovaného ambitu kolem \nkostela nakonec zůstala pouze ruina obvodové zdi a k neodvratné zkáze \npostupně spěl i samotný kostel, podléhající zejména od 60. let stále \nintenzivnější devastaci. Tento stav byl zvrácen sametovou revolucí a \nodchodem Sovětské armády z prostoru Libavá a od počátku 90. let započala\n postupná rekonstrukce, znamenající záchranu této památkové stavby. \nOpraveny byly střechy, krovy a fasády, zatímco vnitřek kostela na \nkomplexní obnovu ještě čeká. Umělecká výzdoba interiéru se však \nzachovala ve velmi porušeném stavu. Příčinou zkázy byla jednak \nzatékající voda a povětrnost, ale také vandalismus, jak je dosud patrné \nmimo jiné z četných, azbukou psaných nápisů na barokních malbách \nv rozsáhlých plochách. Původní uměleckořemeslné detaily a mobiliář \nzmizel takřka důsledně, včetně podlah (v současnosti je již kostel nově \nvydlážděn). Oproti tomu kamenická výzdoba vstupního průčelí přečkala \nv podstatě v celistvosti, včetně soch v nikách věží se sv. Annou a sv. \nJakubem Větším.<br></p><br><p>Výběr z literatury:</p><p>- Jan Bombera – Slavomíra Kašpárková – Jana Krejčová – Irena Peřinová-Kubešová – Helena Richterová, <em>Poutní místo Stará Voda</em>, Olomouc 1997.</p><p>- Jana Krejčová, <em>Stará Voda. Poutní kostel sv. Jakuba Většího a sv. Anny</em>, Velehrad 2008.</p><p>- Milan Buben, <em>Encyklopedie řádů, kongergací a řeholních společností katolické církve v českých zemích. III. Díl, III. svazek: Řeholní klerikové</em>, Praha 2008.</p><p>- Jana Zapletalová, Obraz římského malíře Luigiho Garziho pro kostel ve Staré Vodě, in: , <em>Opuscula Historiae Artium</em>, č. 1, 2016, s. 56-63.</p><p>          </p><p>- Dagmar Lepíková, Giovanni Pietro Tencalla. <em>Kostel sv. Anny a sv. Jakuba Většího ve Staré Vodě na Libavé. Výstavba, devastace a znovuobnovení</em> (diplomová práce), Ústav dějin křesťanského umění, KTF UK, Praha 2009.</p>",
+            "position": "3.295 -5.394 5.675"
+        }
+    },
+    "galleries": [
+        {
+            "json_gallery_src": "stara_voda/galleries/01_oltar",
+            "parent_id": "uniqueID1",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/02_presbytar_klenba",
+            "parent_id": "uniqueID2",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/03_rimsa",
+            "parent_id": "uniqueID3",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/04_lod_klenba",
+            "parent_id": "uniqueID4",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/05_Matous",
+            "parent_id": "uniqueID5",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/06_Marek",
+            "parent_id": "uniqueID6",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/07_Lukas",
+            "parent_id": "uniqueID7",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/08_Jan",
+            "parent_id": "uniqueID8",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/09_Evropa",
+            "parent_id": "uniqueID9",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/10_Asie",
+            "parent_id": "uniqueID10",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/11_Afrika",
+            "parent_id": "uniqueID11",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/12_Amerika",
+            "parent_id": "uniqueID12",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/13_Kristus_v_chramu",
+            "parent_id": "uniqueID13",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/14_Zvestovani",
+            "parent_id": "uniqueID14",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/15_Navstiveni",
+            "parent_id": "uniqueID15",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/16_utek_do_Egypta",
+            "parent_id": "uniqueID16",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/17_Obetovani",
+            "parent_id": "uniqueID18",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/18_Narozeni",
+            "parent_id": "uniqueID17",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/19_putti1",
+            "parent_id": "uniqueID19",
+            "has_full_size_version": true
+        },
+        {
+            "json_gallery_src": "stara_voda/galleries/20_putti2",
+            "parent_id": "uniqueID20",
+            "has_full_size_version": true
+        }
+    ]
+}

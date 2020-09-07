@@ -1,0 +1,38 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "compress-images": "^1.9.5",
+    "electron": "^8.0.2"
+  },
+  "dependencies": {
+    "aframe-click-drag-component": "^3.0.1",
+    "connect": "^3.7.0",
+    "gltf-pipeline": "^3.0.0",
+    "handlebars": "^4.7.6",
+    "imagemin": "^7.0.1",
+    "imagemin-jpegoptim": "^7.0.0",
+    "imagemin-jpegtran": "^7.0.0",
+    "imagemin-mozjpeg": "^9.0.0",
+    "imagemin-pngquant": "^9.0.0",
+    "jimp": "^0.16.1",
+    "ncp": "^2.0.0",
+    "obj2gltf": "^3.1.0",
+    "serve-static": "^1.14.1"
+  }
+}

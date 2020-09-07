@@ -1,0 +1,13 @@
+<script>
+    // SERVER for serving aframe -- cause otherwise it will not work -- maybe consider moving it into its own thread TODO
+    var connect = require('connect');
+    var serveStatic = require('serve-static');
+    const path = require('path');
+ 
+    var begin = __dirname.split("\\");
+    begin.pop();
+    begin = begin.join("\\");
+    connect()
+        .use(serveStatic(path.join(begin, "player_port/")))
+        .listen(8080, () => console.log('Server running on 8080...'));
+</script>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+       <link href="../css/skeleton.css" rel="stylesheet">
+        <title> Configure Gallery </title>
+      </head>
+      <body>
+        <button id="save_gallery" onclick="saveGallery()">Save Changes</button>
+       <button id="add_files" onclick="add_files()">Add Files</button>
+
+       <div id="config_div"></div>
+      </body>
+
+    <script id="gallery_entry_template" type="text/x-handlebars-template">
+        <div id="img_config{{id}}">
+            <img src="../{{gal_path}}/full/{{id}}"> <!-- TODO -- check the path -->
+
+            <div>
+                <p>Annotations:</p>
+                {{#each texts}}
+                    <p>{{@key}}</p>
+                    <textarea class="{{@key}}">{{this}}</textarea>
+                {{/each}}
+            </div>
+        </div>
+    </script>
+
+
+      <script>
+        const fs = require('fs');
+        const Handlebars = require("handlebars");
+        const template = Handlebars.compile(document.getElementById("gallery_entry_template").innerHTML);
+        console.log(template);
+
+        // initiate gallery, if new gallery -- as part of data passing
+        var gallery_path;
+        var newly_added = [];
+
+        // object of {"img.jpg": "annotation", ..}
+        var annotation_obj; 
+
+        const { ipcRenderer } = require("electron");
+        ipcRenderer.on("gallery_data", function (e, data) {
+            console.log("received data");
+            annotation_obj = data.annotation_obj;
+            gallery_path = data.gallery_path;
+            empty_annot = data.empty_annot;
+            // put the datat into template:::
+            process_gallery_json();
+        });
+
+
+        /**
+        * Processes annotation obj -- puts it into graphical representation
+        */
+        function process_gallery_json() {
+            // TODO
+            for (var annotation in annotation_obj) {
+                // if graphical representation exists, skip
+                if (document.getElementById("img_config" + annotation) != undefined) continue;
+                // else insert it using handlebars
+                var div = document.createElement("div");
+                //console.log("HERE");
+                //console.log(annotation_obj);
+                //console.log(annotation_obj[annotation]);
+                // if empty object
+                if (Object.keys(annotation_obj[annotation]).length === 0 && annotation_obj[annotation].constructor === Object) annotation_obj[annotation] = empty_annot; 
+                console.log(annotation_obj[annotation]);
+                div.innerHTML += template({id : annotation, texts : annotation_obj[annotation], gal_path : gallery_path});
+                document.getElementById("config_div").appendChild(div.firstElementChild);
+            }
+        }
+
+        /**
+        * 
+        **/
+        function add_files() {
+            const { dialog } = require('electron').remote;
+            dialog.showOpenDialog(
+                {
+                    properties: ['openFile', 'multiSelections'],
+                    filters: [
+                        { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }
+                    ]
+                }
+            ).then(function(i) {
+                var paths = i.filePaths;
+                
+                if (paths != undefined) {
+                    makePathToFile(gallery_path + "/full/k"); 
+                    console.log("Something inputted."); 
+                    paths.filter((path) => { return !(path.split('\\').pop() in annotation_obj)});
+                    // make compressed version and save it to gallery_path
+                    compress_images(paths);
+                    
+                    for (path of paths) {
+                        if (path.split('\\').pop() in annotation_obj) continue; // in case of adding the same image
+
+                        // copy image to gallery_path/full
+                        fs.copyFile(path, gallery_path + "/full/" + path.split('\\').pop(), (err) => {
+                            if (err) throw err;
+                        });
+
+                        // add image name into the annotation_obj
+                        annotation_obj[path.split('\\').pop()] = empty_annot; // meaning {en:"", cs:"" ...}
+                    }
+
+                    newly_added = newly_added.concat(paths);
+                    console.log("newly added: " + newly_added);
+                    // add graphical representation -- using some function that processes json_obj
+                    process_gallery_json();
+
+                    // set dirty flag for json and files TODO
+                }
+            });
+        }
+
+
+        function compress_images(paths) {
+            // TODO doesnt seem  to be working
+            const imagemin = require("imagemin"); 
+            const imageminPngquant = require("imagemin-pngquant");
+            const imageminMozjpeg = require('imagemin-mozjpeg');
+            console.log("doing imagemin");
+            console.log(paths);
+            console.log(gallery_path);
+            // TODO -- for some unknown reason doesnt work.... 
+            /*(async () => {
+                const files = await imagemin(["C:\\Users\\matou\\Documents\\GitHub\\electron-quick-start\\for_attempts\\moric\\background.jpg"], {
+                    destination: "C:\\Users\\matou\\Documents\\GitHub\\electron-quick-start\\html",
+                    plugins: [
+                        imageminMozjpeg({quality: 85})
+                        imageminPngquant({
+                            quality: [0.8, 0.85]
+                        })
+                    ]
+                });
+                console.log(files);
+            })();*/
+            
+            // TODO
+            //const compress_images = require("compress-images");
+    
+            //INPUT_path_to_your_images = "src/img/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
+            //OUTPUT_path = "build/img/";
+            
+            /*for (path in paths) {
+
+            
+                compress_images(path, gallery_path, { compress_force: false, statistic: true, autoupdate: true }, false,
+                                { jpg: { engine: "mozjpeg", command: ["-quality", "85"] } },
+                                { png: { engine: "pngquant", command: ["--quality=80-85", "-o"] } },
+                function (error, completed, statistic) {
+                    console.log("-------------");
+                    console.log(error);
+                    console.log(completed);
+                    console.log(statistic);
+                    console.log("-------------");
+                });
+            }*/
+
+            const Jimp = require("jimp");
+
+            for (path of paths) {
+                console.log(path)
+                var save_path = gallery_path + "/" + path.split("\\").pop().split(".")[0] + ".jpg";
+                console.log(save_path);
+                (async () => {
+                    Jimp.read(path, (err, lenna) => {
+                        if (err) throw err;
+                        lenna
+                        .quality(85) // set JPEG quality -- TODO -- check if works for .png too??
+                        .write(save_path)// save
+                    });
+                })();
+            }
+            
+        }
+
+
+        function makePathToFile(filePath) {
+            const path = require("path");
+            var dirname = path.dirname(filePath);
+            if (fs.existsSync(dirname)) {
+              return true;
+            }
+            makePathToFile(dirname);
+            fs.mkdirSync(dirname);
+        }
+
+        function saveGallery() {
+            // just send data to main
+            // update annotation obj
+            // TODO -- watch out, doesnt work ---- next thing!!!!
+            for (annot in annotation_obj) {
+                var ret = {};
+                console.log(annot);
+                
+                var textareas = document.querySelectorAll("#img_config" + escapeDot(annot) + " textarea");
+                console.log(textareas);
+                for (textarea of textareas) {
+                    ret[textarea.classList[0]] = textarea.value;
+                }
+                annotation_obj[annot] = ret;
+            }
+            ipcRenderer.send("saveGallery", {newly_added : newly_added, gallery_path : gallery_path, json : annotation_obj});
+    
+        }
+
+        function discardChanges () {
+            // maybe I wont need to do anything -- because newly edited photos will be destroyed anyway upon closing
+            // the app. Question is, what will happen when the same photos are added again... TODO TEST THIS
+        }
+
+
+        function escapeDot(string) {
+            newString = "";
+            for (char of string) {
+                if (char == ".") newString += "\\.";
+                else newString += char;
+            }
+            return newString;
+        }
+
+      </script>
+
+</html>

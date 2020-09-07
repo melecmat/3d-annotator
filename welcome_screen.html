@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'">
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <link href="css/skeleton.css" rel="stylesheet">
+        <title> 3D Annotator - Welcome </title>
+      </head>
+      <body>
+            <div><a href="html/newProj.html"><button id="new_proj_b"> Create new project </button></a></div>
+            <div><button id="ex_proj_b"> Open existing project </button></div>
+            <div><a href="html/help.html"><button id="hlp_b"> Help </button></a></div>
+
+            
+      </body>
+      <script>
+        const {ipcRenderer} = require('electron');
+        const {dialog} = require('electron').remote;
+        document.getElementById("ex_proj_b").addEventListener("click", function(e){
+            var pathProm = dialog.showOpenDialog({
+                properties: ['openDirectory']
+            });
+            pathProm.then(function(i) {
+                var path = i.filePaths[0]; // this is the actual path
+                console.log(path);
+                if (path != undefined) 
+                    ipcRenderer.send("open", path);
+            }); 
+        });
+      </script>
+</html>

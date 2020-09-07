@@ -1,0 +1,13 @@
+{
+    "title" : "Strop kostelu ve Staré vodě",
+    "player": {
+        "orbit_control": false,
+        "model_src": "ceiling/ceiling.glb",
+        "camera_position": "0 0 0",
+        "model_scale": "30",
+        "model_rotation": "-90, 0, 0",
+        "backgound_color": "black"
+    },
+    "annotations" : [],
+    "galleries" : []
+}

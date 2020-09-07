@@ -1,0 +1,15 @@
+{
+    "title" : "Andělíčci",
+    "edit_mode": false,
+    "player": {
+        "orbit_control": true,
+        "model_src": "angels/angels.glb",
+        "camera_position": "0 -2 20",
+        "model_scale": "30",
+        "model_rotation": "-90, 0, 0",
+        "backgound_color": "black"
+    },
+    "annotations" : [
+    ],
+    "galleries" : []
+}
