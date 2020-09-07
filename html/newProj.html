@@ -108,7 +108,7 @@
             document.getElementById("add_model").addEventListener("click", function () {
                   curModNo++;
                   var newNode = createNodeFromHtml('\
-                  <div>\
+                  <div class="model_info">\
                         <button id="model_select'+ curModNo +'" onclick="selectModel()">Select model</button>\
                         <p id="model_name'+ curModNo +'" class="mod_name"></p>\
                         <label> Details about model quality: <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>\
@@ -123,17 +123,22 @@
                   })
             });
 
+            var enabledLanguages = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(x => x.name);
+
             // send the user data via ipcRenderer -- have them checked 
             document.getElementById("create").addEventListener("click", function () {
                   ipcRenderer.send("create_proj", {
-                        name: document.getElementById("proj_name").innerText,
-                        path: document.getElementById("proj_path").innerText,
-                        type: document.querySelector('input[name="proj_type"]:checked').value,
-                        languages: document.querySelectorAll('input[type=checkbox]:checked').map(x => x.name),
-                        models: document.getElementsByClassName("model_info").map(x => {return {
-                              name: x.querySelector(".mod_name"),
-                              details: x.querySelector(".mod_det"),
-                              size: x.querySelector(".mod_siz")
+                        titles: enabledLanguages.reduce((obj, lang) => {
+                              obj[lang] = document.querySelector("#" + lang + "_title input").value;
+                              return obj;
+                        }, {}),
+                        path: document.getElementById("proj_path").innerHTML,
+                        orbitControl: document.querySelector('input[name="proj_type"]:checked').value != "inside",
+                        languages: enabledLanguages,
+                        models: Array.from(document.getElementsByClassName("model_info")).map(x => {return {
+                              model_sr: x.querySelector(".mod_name").innerHTML,
+                              short_comment: x.querySelector(".mod_det").value,
+                              file_size: x.querySelector(".mod_siz").value
                         }})
                   });
             });

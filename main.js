@@ -180,20 +180,25 @@ function createProject(e, data) {
     // create info.json
     // TODO -- LANGUAGES etc!!!!
     var info = {
-        "title": data.name,
-        "path_name": data.path.match(/([^\/]*)\/*$/)[1],
-        "edit_mode": false,
+        "title": "", // TODO -- title is obsolete?
+        "languages": data.titles,
         "player": {
-            "orbit_control": false,
-            "model_src": "stara_voda/0_2uvs_textured_diff.glb",
-            "camera_position": "-0.388 -0.181 -0.515",
-            "camera_rotation": "-0.15 -2.62",
+            "orbit_control": data.orbitControl,
+            "model_src": data.models.length == 1 ? data.models[0].model_sr : "",
+            "qualities": data.models,
+            "camera_position": "0 0 0",
             "model_scale": "30",
             "model_rotation": "-90, 0, 0",
             "backgound_color": "black"
         },
-        "annotations": {}
+        "annotations": {},
+        "galleries": []
     }
+
+    // save JSON file
+    fs.writeFileSync(path.join(data.path, "info.json"), JSON.stringify(info));
+
+    // copy models and perform some operations on them
 }
 
 function correctData(data) {
