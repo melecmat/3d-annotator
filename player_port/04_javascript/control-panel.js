@@ -1,3 +1,5 @@
+
+
 /**
  * Wrapping functions used in control panel.
  */
@@ -12,9 +14,8 @@ var ControlPanel = (function () {
             else if (event.target.id == "copy_pos") copy_position_rotation();
             else if (event.target.id == "goto_pos") go_to_position();
             else if (event.target.id == "help") {
-                var help = document.getElementById("help_popup");
-                if (help.classList.contains("visible")) help.classList.remove("visible");
-                else help.classList.add("visible");
+                console.log("opening help");
+                ipcRenderer.send("openHelp", null);
             }
         });
 
@@ -160,7 +161,6 @@ var ControlPanel = (function () {
         // Execute a function when the user releases a key on the keyboard
         body.addEventListener("keyup", function(event) {
             if (event.target.id != "user_pos") {
-                console.log(event.target.id);
                 return;
             }
             // Number 13 is the "Enter" key on the keyboard
@@ -173,17 +173,9 @@ var ControlPanel = (function () {
         });
     }
 
-    /**
-     * Adds event listeners to help
-     */
-    function register_help() {
-        var help_button = document.getElementById("help");
-        help_button.addEventListener("click", function(e) {
-            var help = document.getElementById("help_popup");
-            if (help.classList.contains("visible")) help.classList.remove("visible");
-            else help.classList.add("visible");
-        });
-    }
+    
+
+    
 
     return {
         go_to_position: go_to_position

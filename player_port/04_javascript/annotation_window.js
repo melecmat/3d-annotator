@@ -5,10 +5,12 @@
  */
 var AnnotationWindow = (function () {
     var is_dirty = false; // value used for handling unsaved data
-
+    var dirty = { // TODO -- change dirty handling into this object of dirtiness :D
+        rot : false
+    };  
     const {ipcRenderer} = require('electron');
     const { BrowserWindow, ipcMain } = require('electron').remote;
-    const fs = require("fs")
+    const fs = require("fs");
     const path = require("path");
     // path specified by the user
     var realPathOfProject = "";
@@ -21,11 +23,41 @@ var AnnotationWindow = (function () {
     function put_listeners() {
         document.getElementById("save_change").addEventListener("click", save_changes);
         document.getElementById("discard_change").addEventListener("click", discard_changes);
-        document.getElementById("reveal_server_v").addEventListener("click", get_version_from_web);
-        document.getElementById("save_browser").addEventListener("click", save_to_local_storage);
+        //document.getElementById("reveal_server_v").addEventListener("click", get_version_from_web);
+        //document.getElementById("save_browser").addEventListener("click", save_to_local_storage);
+        document.getElementById("back_to_main").addEventListener("click", (e) => {
+            if (!confirm("Do you want to leave project?")) return;
+            ipcRenderer.send("goHome", null);
+        });
         document.getElementById("save_button").addEventListener("click", save_json);
         document.getElementById("new_popup_button").addEventListener("click", create_new_popup);
-        document.getElementById("data_delete_button").addEventListener("click", delete_local_data);
+
+        document.getElementById("change_camera_begin_pos").addEventListener("click", change_camera_begin_pos);
+
+        document.getElementById("new_empty_annot").addEventListener("click", make_annot_in_front);
+        document.getElementById("rotate_model").addEventListener("click", toggle_model_rotation);
+        document.addEventListener("keydown", (evt) => {
+            if (evt.ctrlKey && evt.key === 'n') {
+                make_annot_in_front();
+            }
+            if (evt.ctrlKey && evt.key === 'r') {
+                toggle_model_rotation();
+            }
+        
+        });
+    }
+
+    function toggle_model_rotation () {
+        var model = document.getElementById("gltf_model");
+        
+        if (model.getAttribute("transform-controls") == null) {
+            dirty.rot = true
+            model.setAttribute("transform-controls", "");
+        } else {
+            save_json();
+            dirty.rot = false;
+            model.removeAttribute("transform-controls"); 
+        }
     }
 
     /**
@@ -407,14 +439,7 @@ var AnnotationWindow = (function () {
         App.put_template_to_html(template_info, "a-scene", Handlebars.templates.popup_button);
         App.put_template_to_html(template_info, "body", Handlebars.templates.popup);
         json_obj.annotations[new_id] = template_info.annotations[new_id];
-        /*document.arrive("#delete" + new_id, function() {
-            // 'this' refers to the newly created element
-            console.log("HELLO form the other side");
-            this.classList.add("visible");
-        });
-        document.arrive("#edit" + new_id, function() {
-            this.classList.add("visible");
-        });*/
+        
 
         make_edit_button_apear(document.getElementById("delete" + new_id));
         make_edit_button_apear(document.getElementById("edit" + new_id));
@@ -477,7 +502,13 @@ var AnnotationWindow = (function () {
         // save to local storage
         //save_to_local_storage();
         //let data = JSON.stringify(json_obj);
-        if (!is_dirty) return; // does not have to save when no change has been done
+        if (!is_dirty && Object.values(dirty).every(val => val == false)) return; // does not have to save when no change has been done
+        if (dirty.rot) {
+            // read rotation and set to json
+            var rotation = document.getElementById("gltf_model").getObject3D("mesh").rotation;
+            console.log(rotation);
+            json_obj.player.model_rotation = radToDeg(rotation.x) + " " + radToDeg(rotation.y) + " " + radToDeg(rotation.z);
+        }
         App.save_json();
         is_dirty = false;
     }
@@ -510,6 +541,41 @@ var AnnotationWindow = (function () {
         window.localStorage.removeItem(get_local_location());
         // trigger page refresh
         location.reload();
+    }
+
+    /**
+     * Puts annotation in front of camera view.
+     * TODO -- make this work for orbit controls!!
+     */
+    function make_annot_in_front() {
+        var newId = find_empty_id();
+        var mockup_json = {
+            "edit_mode" : true,
+            "annotations" : {
+                ["uniqueID" + newId] : {
+                    "heading" : "",
+                    "text" : "",
+                    "position" : Object.values(getInFrontOfCameraPos(3)).reduce((bef, next) => bef + " " + next)
+                }
+            }
+        }
+        App.put_template_to_html(mockup_json, "a-scene", Handlebars.templates.popup_button);
+        App.put_template_to_html(mockup_json, "body", Handlebars.templates.popup);
+        json_obj.annotations[newId] = {
+            "heading" : "",
+            "text" : "",
+            "texts": Language.getProvidedLanguage().reduce((prev, lang) => {
+                prev[lang] = {heading : "", text : ""}
+                return prev;
+            }, {}),
+            "position" : getInFrontOfCameraPos(3)
+        }
+
+        make_edit_button_apear(document.getElementById("delete" + newId));
+        make_edit_button_apear(document.getElementById("edit" + newId));
+
+        is_dirty = true;
+        
     }
 
 
@@ -595,6 +661,13 @@ var AnnotationWindow = (function () {
         return eA;
     }
 
+    function change_camera_begin_pos() {
+        var posrot = get_entity_position_string(document.getElementById("camera"), true);
+        json_obj.player.camera_position = posrot.split(" ").slice(0, 3).join(" ");
+        json_obj.player.camera_rotation = posrot.split(" ").slice(-2).join(" ");
+        is_dirty = true;
+    }
+
     return {
 
         /**
@@ -606,11 +679,10 @@ var AnnotationWindow = (function () {
             
             console.log("Edit mode allowed.");
             //  TODO -- make this a normal thing directly in html -- also revise the buttons
-            var extra_buttons = '<button class="ed_button button" id="new_popup_button">Vytvořit novou anotaci</button>\
-            <button class="ed_button button" id="reveal_server_v">Načíst verzi ze serveru</button>\
-            <button class="ed_button button" id="save_browser">Uložit do prohlížeče</button>\
-            <button class="ed_button button" id="save_button">Uložit JSON soubor</button>\
-            <button class="ed_button button" id="data_delete_button">Vymazat úpravy</button>';
+            var extra_buttons = '<button class="ed_button button" id="back_to_main">Go to main menu</button>\
+            <button class="ed_button button" id="new_empty_annot"> Insert new annotation (CTRL + N)</button>\
+            <button class="ed_button button" id="rotate_model"> Toggle model rotation (CTRL + R) </button>\
+            <button class="ed_button button" id="change_camera_begin_pos"> Set camera begin position and rotation to current values </button>';
             document.getElementById("control_panel").innerHTML += extra_buttons;
             Editor.init_editors();
 
@@ -629,6 +701,7 @@ var AnnotationWindow = (function () {
             put_listeners();
         },
 
+        make_annot_in_front : make_annot_in_front,
         make_edit_buttons_apear : make_edit_buttons_apear,
         makeNewGallery : makeNewGallery,
         editGallery: editGallery

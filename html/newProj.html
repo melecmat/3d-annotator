@@ -12,26 +12,36 @@
             <a href="../welcome_screen.html"> <button>Back</button></a>
             <h1>New Project</h1>
 
-            <label>Name of project: <input type="text" id="proj_name"></label>
-
             <button id="path_select"> Select project location </button>
-            <p id="proj_path"></p>
+            <p id="proj_path" class="info"></p>
 
             <h3>Choose project controls</h3>
+            <p class="info">
+                  Choose the way you and user will interact with the scene that are characterised by their use cases. <br>
+                  <a href="https://melecmat.github.io/player/player.html?stara_voda" target="_blank">Inside:</a> good for movement indoors, combination of WASD or arrow keys and mouse allows movement in space. <br>
+                  <a href="https://melecmat.github.io/player/player.html?angels" target="_blank">Outside:</a> good for exterior models like statues, movement around object using mouse or touch textures.  
+            </p>
+
             <label> <input type="radio" name="proj_type" value="inside" checked> Inside</label>
             <label> <input type="radio" name="proj_type" value="outside"> Outside</label>
 
             <h3>Toggle languages</h3>
+            <p class="info">
+                  Select languages of your project and specify project name in selected languages. You will be able to create annotations with texts in all of those languages and
+                  the viewers will be able to view the annotations in their specified language. If your language is not on the list,
+                  it can be added, provided that you translate app user interface to that language.
+            </p>
+
             <!-- TODO -- will have to write some descriptive details here and everywhere -->
-            <div><label> <input type="checkbox" class="langtick" name="en" id="en"> English </label>  <span class="title" id="en_title"> Title: <input type="text"></span></div>
-            <div><label> <input type="checkbox" class="langtick" name="de" id="de"> German </label> <span class="title" id="de_title"> Title: <input type="text"></span></div>
-            <div><label> <input type="checkbox" class="langtick" name="cs" id="cs"> Czech </label> <span class="title" id="cs_title"> Title: <input type="text"></span></div>
+            <div class="wrapper"><label> <input type="checkbox" class="langtick" name="en" id="en"> English </label>  <span class="title" id="en_title"> Title: <input type="text"></span></div>
+            <div class="wrapper"><label> <input type="checkbox" class="langtick" name="de" id="de"> German </label> <span class="title" id="de_title"> Title: <input type="text"></span></div>
+            <div class="wrapper"><label> <input type="checkbox" class="langtick" name="cs" id="cs"> Czech </label> <span class="title" id="cs_title"> Title: <input type="text"></span></div>
 
             <h3>Choose model</h3>
-            <p> 3D model can be of type .glb, .gltf or .obj. If you choose .obj model, it will be further optimised
+            <p class="info"> 3D model can be of type .glb, .gltf or .obj. If you choose .obj model, it will be further optimised
                   and transformed into .glb for use in the project (this operation may take some time).
             </p>
-            <p> You can either select one model, or select multiple models of diferrent qualities.
+            <p class="info"> You can either select one model, or select multiple models of different qualities.
                   You should provide short description of individual qualities in each of your specified languages,
                   for example how big they are, if older devices can handle them easily etc.    
             </p>
@@ -40,13 +50,13 @@
             <div id="models">
                   <div class="model_info">
                         <button id="model_select1">Select model</button>
-                        <p id="model_name1" class="mod_name"></p>
+                        <p id="model_name1" class="mod_name info"></p>
                         <label> Details about model quality (do not fill up if you have only one model): <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>
                         <label> Size of model (in MB): <input type="number" id="model_size'+ curModNo + '" class="mod_siz"> </label>
                   </div>               
             </div>
             <button id="add_model">Add another model (quality)</button>
-            
+            <br>
             <button id="create">Create project</button>
 
 
@@ -54,6 +64,32 @@
                   .title {
                         visibility:hidden
                   }
+
+                  body {
+                        margin : 2em
+                  }
+
+                  .wrapper * {
+                        display:inline-block;
+                        padding-right: 0.5em;
+                  }
+
+                  .model_info {
+                        border-left: 5px solid #2196F3;
+                        padding-left: 1em;
+                        margin-bottom: 1em;
+                  }
+
+                  .info {
+                        font-style: italic;
+                        font-size: small;
+                  }
+
+                  #create {
+                        font-weight: bold;    
+                  }
+
+
             </style>
             
       </body>
@@ -110,7 +146,7 @@
                   var newNode = createNodeFromHtml('\
                   <div class="model_info">\
                         <button id="model_select'+ curModNo +'" onclick="selectModel()">Select model</button>\
-                        <p id="model_name'+ curModNo +'" class="mod_name"></p>\
+                        <p id="model_name'+ curModNo +'" class="mod_name info"></p>\
                         <label> Details about model quality: <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>\
                         <label> Size of model (in MB): <input type="number" id="model_size'+ curModNo + '" class="mod_siz"> </label>\
                         <button id="remove'+ curModNo +'">Remove model</button>\
@@ -123,11 +159,11 @@
                   })
             });
 
-            var enabledLanguages = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(x => x.name);
 
             // send the user data via ipcRenderer -- have them checked 
             document.getElementById("create").addEventListener("click", function () {
-                  ipcRenderer.send("create_proj", {
+                  var enabledLanguages = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(x => x.name);
+                  var toSend = {
                         titles: enabledLanguages.reduce((obj, lang) => {
                               obj[lang] = document.querySelector("#" + lang + "_title input").value;
                               return obj;
@@ -140,7 +176,9 @@
                               short_comment: x.querySelector(".mod_det").value,
                               file_size: x.querySelector(".mod_siz").value
                         }})
-                  });
+                  };
+                  //console.log(toSend);
+                  ipcRenderer.send("create_project", toSend);
             });
 
       </script>

@@ -3,7 +3,7 @@ const fs = require('fs');
 const gltfPipeline = require('gltf-pipeline');
 const fsExtra = require('fs-extra');
 
-
+// TODO!!!!!
 function simplifyModel(modelPath, newPath) {
     obj2gltf(modelPath)
     .then(function(gltf) {

@@ -3,16 +3,35 @@
     <head>
         <meta charset="UTF-8">
         <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'">
-        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
         <link href="css/skeleton.css" rel="stylesheet">
         <title> 3D Annotator - Welcome </title>
       </head>
       <body>
+          <div id="wrap">
             <div><a href="html/newProj.html"><button id="new_proj_b"> Create new project </button></a></div>
             <div><button id="ex_proj_b"> Open existing project </button></div>
-            <div><a href="html/help.html"><button id="hlp_b"> Help </button></a></div>
+            <div><a href="html/help.html" target="_blank"><button id="hlp_b"> Help </button></a></div>
+        </div>
 
+            <style>
+                div#wrap {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    -webkit-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                }
+                #wrap div {
+                    width: 90%;
+                    margin: 0 auto;
+                }
+
+                #wrap div button {
+                    width: 90%;
+                    margin: 3 auto;
+                    font-weight: bold;
+                }
+            </style>
             
       </body>
       <script>

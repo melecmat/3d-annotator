@@ -11,17 +11,39 @@
        <button id="add_files" onclick="add_files()">Add Files</button>
 
        <div id="config_div"></div>
+
+       <style>
+            img {
+                max-height:10em;
+                max-width: 10em;
+            }
+
+            .img_conf {
+                border-left: 5px solid #2196F3;
+                padding-left: 1em;
+                margin-bottom: 1em;
+            }
+
+            .img_conf div * {
+                display: inline-block
+            }
+
+            .formfield * {
+                vertical-align: middle;
+            }
+
+       </style>
+
       </body>
 
     <script id="gallery_entry_template" type="text/x-handlebars-template">
-        <div id="img_config{{id}}">
+        <div id="img_config{{id}}" class="img_conf">
             <img src="../{{gal_path}}/full/{{id}}"> <!-- TODO -- check the path -->
 
             <div>
-                <p>Annotations:</p>
                 {{#each texts}}
-                    <p>{{@key}}</p>
-                    <textarea class="{{@key}}">{{this}}</textarea>
+                    <p class="formfield"><label>{{@key}}
+                    <textarea class="{{@key}}">{{this}}</textarea></label></p>
                 {{/each}}
             </div>
         </div>
@@ -165,7 +187,7 @@
 
             for (path of paths) {
                 console.log(path)
-                var save_path = gallery_path + "/" + path.split("\\").pop().split(".")[0] + ".jpg";
+                var save_path = gallery_path + "/" + path.split(path.sep).pop().split(".")[0] + ".jpg";
                 console.log(save_path);
                 (async () => {
                     Jimp.read(path, (err, lenna) => {

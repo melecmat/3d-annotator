@@ -1,20 +1,19 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
+  "name": "3d-annotator",
+  "version": "0.0.1",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/melecmat/3d-annotator",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "3D",
+    "viewer",
+    "annotations",
+    "a-frame"
   ],
-  "author": "GitHub",
+  "author": "Matous Melecky",
   "license": "CC0-1.0",
   "devDependencies": {
     "compress-images": "^1.9.5",
@@ -23,6 +22,7 @@
   "dependencies": {
     "aframe-click-drag-component": "^3.0.1",
     "connect": "^3.7.0",
+    "electron-progressbar": "^1.2.0",
     "gltf-pipeline": "^3.0.0",
     "handlebars": "^4.7.6",
     "imagemin": "^7.0.1",

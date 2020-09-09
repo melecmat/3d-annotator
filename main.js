@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
 const { remote } = require('electron');
 const fs = require("fs"); 
+const ProgressBar = require('electron-progressbar');
 //const path = require("path");
 
 // Create the browser window.
@@ -106,20 +107,29 @@ ipcMain.on("create_project", createProject);
 ipcMain.on("getRPOP", function () {
     mainWindow.webContents.send("realPathOfProject", currentPath);
 });
+ipcMain.on("goHome", () => {
+    mainWindow.loadFile("welcome_screen.html");
+});
+ipcMain.on("openHelp", () => {
+    hlp = new BrowserWindow({
+    });
+    hlp.loadFile("html/help.html");
+})
 
 ipcMain.on("save_json", function (e, json_obj) {
+    console.log("Gonna save JSON");
     var data = JSON.stringify(json_obj);
 
     // write into the actual project path
     fs.writeFile(path.join(currentPath, "info.json"), data, (err) => {
         if (err) throw err;
-        console.log('Data written to file');
+        console.log('Data written to project path');
     });
 
     // write into the temp version
     fs.writeFileSync(path.join("player_port/player/" + lastFold, "info.json"), data, (err) => {
         if (err) throw err;
-        console.log('Data written to file');
+        console.log('Data written to temp path');
     });
 
     e.returnValue = "received";
@@ -154,7 +164,7 @@ function openProject(e, pat) {
     var ncp = require('ncp').ncp;
  
     ncp.limit = 16;
-    lastFold = pat.split('\\').pop();
+    lastFold = pat.split(pat.sep).pop();
     //console.log(lastFold);
     ncp(pat, "player_port/player/" + lastFold, function (err) {
         if (err) {
@@ -177,8 +187,46 @@ function correctPath(path) {
 
 function createProject(e, data) {
     if (!correctData(data)) return; // dialogs should be taken care of in correctData function
+    
+    // create and fire up progressbar
+    var progressBar = new ProgressBar({
+        text: 'Setting up project...',
+        detail: 'Optimizing models, copying files, may take a few minutes'
+    });
+
+    progressBar
+        .on('completed', function() {
+            console.info(`completed...`);
+            progressBar.detail = 'Done...';
+        })
+        .on('aborted', function() {
+            console.info(`aborted...`);
+        });
+
+    
+    //console.log("Written json to " + path.join(data.path, "info.json"));
+    // copy models and perform some operations on them
+    
+    for (var model of data.models) {
+        var ext = model.model_sr.slice(-4);
+        var newModelPath = path.join(data.path, path.basename(model.model_sr).split(".")[0] + ".glb");
+        if (ext == ".glb") {
+            fs.copyFileSync(model.model_sr, newModelPath);
+        } else if (ext == "gltf") {
+            // TODO --- texture optimization, draco compression and convert to .glb
+        } else {
+            // must be .obj
+            simplifyModel(model.model_sr, newModelPath);
+        }
+    }
+
     // create info.json
-    // TODO -- LANGUAGES etc!!!!
+    data.models = data.models.map((model) => {
+        var folder = data.path.split(path.sep).pop();
+        var file = model.model_sr.split(path.sep).pop();
+        model.model_sr = folder + "/" + file;
+        return model;
+    });
     var info = {
         "title": "", // TODO -- title is obsolete?
         "languages": data.titles,
@@ -198,11 +246,97 @@ function createProject(e, data) {
     // save JSON file
     fs.writeFileSync(path.join(data.path, "info.json"), JSON.stringify(info));
 
-    // copy models and perform some operations on them
+    console.log("Done");
+    progressBar.setCompleted();
+    openProject(null, data.path);
+}
+
+// TODO!!!!!
+function simplifyModel(modelPath, newPath) {
+    const obj2gltf = require('obj2gltf');
+    const gltfPipeline = require('gltf-pipeline');
+    const fsExtra = require('fs-extra');
+
+    obj2gltf(modelPath)
+    .then(function(gltf) {
+        // converted into gltf
+        //const data = Buffer.from(JSON.stringify(gltf));
+        //fs.writeFileSync(newPath + '/tmp.gltf', data);
+
+        const options = {
+            separateTextures: true,
+            dracoOptions: {
+                compressionLevel: 10
+            }
+        };
+
+        gltfPipeline.processGltf(gltf, options)
+        .then(function(results) {
+            fsExtra.writeJsonSync(newPath + '/tmp/' + 'model-separate.gltf', results.gltf);
+            // Save separate resources
+            const separateResources = results.separateResources;
+            for (const relativePath in separateResources) {
+                if (separateResources.hasOwnProperty(relativePath)) {
+                    const resource = separateResources[relativePath];
+                    fsExtra.writeFileSync(newPath + '/tmp/' + relativePath, resource);
+                }
+            }
+
+            // for each resource -- do img compression
+            let dirCont = fs.readdirSync(newPath + '/tmp');
+            dirCont.filter(function(elm) {return elm.match(/.*\.(jpg?jpeg?JPEG?JPG)/ig);}).map(function (el) {
+                Jimp.read(newPath + '/tmp/' + el)
+                .then(img => {
+                    return img
+                    .quality(85) // set JPEG quality
+                    .write(newPath + '/tmp/' + el); // save
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            });
+
+
+            // save as draco glb -- TODO
+            gltfPipeline.gltfToGlb(gltf)
+            .then(function(results) {
+                fsExtra.writeFileSync('model.glb', results.glb);
+            });
+
+        });
+
+    });
+    // TODO -- should work the same as obj2optimizedGlb
 }
 
 function correctData(data) {
-    return true;
+    //console.log(data);
+    var ret = true;
+    var msg = "";
+    if (data.path === "") {
+        msg += "Path to project must be provided.\n";
+        ret = false;
+    }
+    if (data.languages.length == 0) {
+        msg += "No language specified.\n";
+        ret = false;
+    }
+    if (Object.values(data.titles).length == 0 || !Object.values(data.titles).every(title => title != "")) {
+        msg += "All languages should have titles.\n";
+        ret = false;
+    }
+    if (!data.models.every(model => model.model_sr != "")) {
+        msg += "All models should have some path.";
+        ret = false;
+    }
+    //const { dialog } = require('electron')
+    if (!ret) dialog.showMessageBox({
+                type: 'info',
+                buttons: [],
+                title: 'Missing information',
+                message: msg,
+            });
+    return ret;
 }
 
 
@@ -256,9 +390,11 @@ ipcMain.on("saveGallery", (e, data) => {
     // TODO -- loading popup
     // get actual filenames instead of paths
     //console.log(data.newly_added);
+    
+
     newly_added = data.newly_added.map((pat) => {
         //console.log(pat);
-        return pat.split("\\").pop();
+        return pat.split(path.sep).pop();
     });
 
     var galleryName = data.gallery_path.split("/").pop();

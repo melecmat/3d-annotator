@@ -1,5 +1,5 @@
 #control_panel {
-    transition: left 1s;
+    /*transition: left 1s;*/
     position:absolute;
     left:-11rem;
     top:0%;
@@ -25,7 +25,7 @@ div.orbit_control > #speed {
 
 
 #control_trigger {
-    transition: left 1s;
+    /*transition: left 1s;*/
     cursor:pointer;
     border-radius: 25px;
     padding-left: 2rem;

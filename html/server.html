@@ -4,9 +4,9 @@
     var serveStatic = require('serve-static');
     const path = require('path');
  
-    var begin = __dirname.split("\\");
+    var begin = __dirname.split(path.sep);
     begin.pop();
-    begin = begin.join("\\");
+    begin = begin.join(path.sep);
     connect()
         .use(serveStatic(path.join(begin, "player_port/")))
         .listen(8080, () => console.log('Server running on 8080...'));

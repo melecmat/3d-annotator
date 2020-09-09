@@ -162,9 +162,8 @@ var App = (function () {
         var done_event = new Event("template_done");
         document.dispatchEvent(done_event);
 
-        // set up camera rotation
-        // somehow had to do it this non elegant way
-        if (json_obj.player.camera_rotation != null) {
+        // set up camera rotation -- DONE IN control.js under component 'big-model'!!
+        /*if (json_obj.player.camera_rotation != null) {
             var camera = document.getElementById("camera");
             // little cheeky wait for camera to exist..
             (function waitForElement(){
@@ -175,7 +174,7 @@ var App = (function () {
                     ControlPanel.go_to_position(null, json_obj.player.camera_position + " " + json_obj.player.camera_rotation);
                 }
             })();
-        }
+        }*/
     }
 
     /**
@@ -227,10 +226,12 @@ var App = (function () {
     }
 
     function create_model(model_src, model_scale, model_rotation) {
-        var model = document.createElement("a-entity"); // TODO
+        var model = document.createElement("a-entity");
         model.setAttribute("my-gltf-model", model_src);
         model.setAttribute("id", "gltf_model");
+        model.classList.add("clickable");
         model.setAttribute("big_model", "");
+        //model.setAttribute("transform-controls", ""); // for rotation in 3D annotator
         model.setAttribute("autoscale", 'scale:'+ model_scale + '; rotation: '+ model_rotation);
         document.querySelector("a-scene").appendChild(model);
     }

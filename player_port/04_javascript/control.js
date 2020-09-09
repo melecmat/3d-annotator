@@ -152,8 +152,10 @@ AFRAME.registerComponent("transform-controls", {
         var renderer = document.querySelector('a-scene').renderer;
         var scene = document.querySelector('a-scene').object3D;
         var control = new THREE.TransformControls(camera, renderer.domElement);
+        if (this.el.id == "gltf_model") control.mode = "rotate"; // rotate the model
         control.addEventListener('change', function (){ renderer.render(scene, camera)});
-        control.attach(this.el.object3D);
+        if (this.el.id == "gltf_model") control.attach(this.el.getObject3D("mesh"));
+        else control.attach(this.el.object3D);
         scene.add(control);
         this.scene = scene;
         this.control = control;
@@ -164,6 +166,17 @@ AFRAME.registerComponent("transform-controls", {
         this.scene.remove(this.control);
     }
 });
+
+
+
+// TODO -- rewrite into component, also use the shift click detection -- make it general
+document.getElementById("gltf_model").addEventListener("click", (evt) => {
+    if (evt.shiftKey) {
+        if (evt.target.getAttribute("transform-controls") == null) evt.target.setAttribute("transform-controls", "");
+        else evt.target.removeAttribute("transform-controls"); 
+    }
+});
+
 
 
 /**
@@ -240,11 +253,17 @@ function createArrow(position, direction, color) {
 }
 
 
+
 /**
  * For loading screen to know when to end.
  */
 AFRAME.registerComponent('big_model', {
     init: function() {
+        var el = this.el;
+
+        // CAMERA POSITION ROTATION SETUP -- here cause I couldnt be bothered with creating new component
+        if (json_obj.player.camera_rotation != null) ControlPanel.go_to_position(null, json_obj.player.camera_position + " " + json_obj.player.camera_rotation);
+
        this.el.addEventListener('model-loaded', e => {
            document.querySelector("#loading_screen").remove();
            console.log("Should see model");
@@ -304,9 +323,12 @@ AFRAME.registerComponent('autoscale', {
 
 });
 
-function degToRad(degrees)
-{
+function degToRad(degrees) {
   return degrees * (Math.PI/180);
+}
+
+function radToDeg(radians) {
+    return radians * (180/Math.PI);
 }
 
 
@@ -335,6 +357,27 @@ function get_entity_position_string(entity, rotation) {
      * @param {*} no 
      * @param {*} precision 
      */
-    function toFixedTruncate(no, precision) {
-        return parseFloat(no.toFixed(precision));
-    }
+function toFixedTruncate(no, precision) {
+    return parseFloat(no.toFixed(precision));
+}
+
+
+function getCameraFaceDirection() {
+    var direction = new THREE.Vector3();
+    document.getElementById("camera").sceneEl.camera.getWorldDirection(direction);
+    return direction;
+}
+
+function getInFrontOfCameraPos(howFar) {
+    var cameraDirection = getCameraFaceDirection();
+    var cameraPosition = document.getElementById("camera").getAttribute("position");
+    //cameraDirection.multiplyScalar(howFar);
+    var newPos = {};
+    newPos.x = cameraPosition.x + howFar*cameraDirection.x
+    newPos.y = cameraPosition.y + howFar*cameraDirection.y 
+    newPos.z = cameraPosition.z + howFar*cameraDirection.z
+    return newPos;
+}
+
+    
+
