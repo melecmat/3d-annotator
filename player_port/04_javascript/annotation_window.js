@@ -12,10 +12,7 @@ var AnnotationWindow = (function () {
     const { BrowserWindow, ipcMain } = require('electron').remote;
     const fs = require("fs");
     const path = require("path");
-    // path specified by the user
-    var realPathOfProject = "";
-    //ipcRenderer.send("getRPOP", "");
-    //ipcRenderer.once("realPathOfProject", function(e, path) {realPathOfProject = path});
+    
 
     /**
      * Puts all event listeners.
@@ -30,18 +27,22 @@ var AnnotationWindow = (function () {
             ipcRenderer.send("goHome", null);
         });
         document.getElementById("save_button").addEventListener("click", save_json);
-        document.getElementById("new_popup_button").addEventListener("click", create_new_popup);
+        /*document.getElementById("new_popup_button").addEventListener("click", create_new_popup);*/
 
         document.getElementById("change_camera_begin_pos").addEventListener("click", change_camera_begin_pos);
 
         document.getElementById("new_empty_annot").addEventListener("click", make_annot_in_front);
         document.getElementById("rotate_model").addEventListener("click", toggle_model_rotation);
         document.addEventListener("keydown", (evt) => {
-            if (evt.ctrlKey && evt.key === 'n') {
+            if (!evt.ctrlKey) return;
+            else if (evt.key === 'n') {
                 make_annot_in_front();
             }
-            if (evt.ctrlKey && evt.key === 'r') {
+            else if (evt.key === 'r') {
                 toggle_model_rotation();
+            }
+            else if (evt.key === "s") {
+                save_json();
             }
         
         });
@@ -265,12 +266,16 @@ var AnnotationWindow = (function () {
     function delete_annotation(button) {
         // really?
         if (!confirm("Do you really want to erase annotation?")) return;
+        // close annotation 
+        close_windows();
         var annotation_id = button.parentNode.id;
         var annotation_button = document.getElementById("rendered" + annotation_id);
         var annotation = document.getElementById(annotation_id);
         annotation_button.parentNode.removeChild(annotation_button);
         annotation.parentNode.removeChild(annotation);
         delete json_obj.annotations[annotation_id];
+        ipcRenderer.send("focusMain", null);
+        is_dirty = true;
         // TODO save
         //save_to_local_storage();
     }
@@ -548,14 +553,22 @@ var AnnotationWindow = (function () {
      * TODO -- make this work for orbit controls!!
      */
     function make_annot_in_front() {
-        var newId = find_empty_id();
+        var newId = "uniqueID" + find_empty_id();
+        var strpos;
+        if (json_obj.player.orbit_control) strpos = getInFrontOfCameraPos(3);
+        else strpos = getInFrontOfCameraPos(3);
+        strpos = Object.values(strpos).reduce((bef, next) => bef + " " + next);
+        console.log(strpos)
         var mockup_json = {
             "edit_mode" : true,
+            "player" : {
+                "orbit_control" : true,
+            },
             "annotations" : {
-                ["uniqueID" + newId] : {
+                [ newId] : {
                     "heading" : "",
                     "text" : "",
-                    "position" : Object.values(getInFrontOfCameraPos(3)).reduce((bef, next) => bef + " " + next)
+                    "position" : strpos 
                 }
             }
         }
@@ -568,9 +581,10 @@ var AnnotationWindow = (function () {
                 prev[lang] = {heading : "", text : ""}
                 return prev;
             }, {}),
-            "position" : getInFrontOfCameraPos(3)
+            "position" : strpos
         }
 
+        console.log(newId);
         make_edit_button_apear(document.getElementById("delete" + newId));
         make_edit_button_apear(document.getElementById("edit" + newId));
 
@@ -680,23 +694,12 @@ var AnnotationWindow = (function () {
             console.log("Edit mode allowed.");
             //  TODO -- make this a normal thing directly in html -- also revise the buttons
             var extra_buttons = '<button class="ed_button button" id="back_to_main">Go to main menu</button>\
-            <button class="ed_button button" id="new_empty_annot"> Insert new annotation (CTRL + N)</button>\
-            <button class="ed_button button" id="rotate_model"> Toggle model rotation (CTRL + R) </button>\
-            <button class="ed_button button" id="change_camera_begin_pos"> Set camera begin position and rotation to current values </button>';
+            <button class="ed_button button" id="new_empty_annot"> Insert new annotation (CTRL + N)</button>' +
+            (json_obj.player.orbit_controls ? "" : '<button class="ed_button button" id="rotate_model"> Toggle model rotation (CTRL + R) </button>') +
+            '<button class="ed_button button" id="change_camera_begin_pos"> Set camera begin position and rotation to current values </button>\
+            <button class="ed_button button" id="save_button"> Save changes (CTRL + S) </button>';
             document.getElementById("control_panel").innerHTML += extra_buttons;
             Editor.init_editors();
-
-            // catch ctrl + shift + e and turn on edit buttons
-            /*document.addEventListener("keydown", function (zEvent) {
-                if (zEvent.ctrlKey  &&  zEvent.shiftKey  &&  (zEvent.key === "e" || zEvent.key === "E")) {  // case sensitive
-                    zEvent.preventDefault();
-                    if (!key_comb_pressed){
-                        key_comb_pressed = true;
-                        make_edit_buttons_apear();
-                        prevent_data_deletion();
-                    }
-                } else {}
-            }, true);*/
 
             put_listeners();
         },

@@ -142,6 +142,7 @@ var App = (function () {
         put_template_to_html(json_obj.player, "body", Handlebars.templates.player);
         create_model(json_obj.player.model_src, json_obj.player.model_scale, json_obj.player.model_rotation);
         // annotations
+        console.log("orbit controls: " + json_obj.player.orbit_control);
         put_template_to_html(json_obj, "a-scene", Handlebars.templates.popup_button);
         put_template_to_html(json_obj, "body", Handlebars.templates.popup);
         // gallery
@@ -229,7 +230,7 @@ var App = (function () {
         var model = document.createElement("a-entity");
         model.setAttribute("my-gltf-model", model_src);
         model.setAttribute("id", "gltf_model");
-        model.classList.add("clickable");
+        //model.classList.add("clickable");
         model.setAttribute("big_model", "");
         //model.setAttribute("transform-controls", ""); // for rotation in 3D annotator
         model.setAttribute("autoscale", 'scale:'+ model_scale + '; rotation: '+ model_rotation);

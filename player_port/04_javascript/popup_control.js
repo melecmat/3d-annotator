@@ -56,7 +56,7 @@ function close_windows() {
     for (var l = 0; l < popup.length; l++) {
         popup[l].classList.remove('visible');
     }
-    document.onkeydown = null;
+    document.onkeydown = ()=>{};
 }
 
 /**

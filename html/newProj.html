@@ -15,6 +15,9 @@
             <button id="path_select"> Select project location </button>
             <p id="proj_path" class="info"></p>
 
+            <button id="picture_select"> Select loading picture </button>
+            <p id="proj_picture" class="info"></p>
+
             <h3>Choose project controls</h3>
             <p class="info">
                   Choose the way you and user will interact with the scene that are characterised by their use cases. <br>
@@ -52,7 +55,6 @@
                         <button id="model_select1">Select model</button>
                         <p id="model_name1" class="mod_name info"></p>
                         <label> Details about model quality (do not fill up if you have only one model): <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>
-                        <label> Size of model (in MB): <input type="number" id="model_size'+ curModNo + '" class="mod_siz"> </label>
                   </div>               
             </div>
             <button id="add_model">Add another model (quality)</button>
@@ -115,6 +117,22 @@
                   });
             }
 
+            document.getElementById("picture_select").addEventListener("click", selectPicture);
+            function selectPicture (ev) {
+                  var pathProm = dialog.showOpenDialog({
+                        properties: ['openFile'],
+                        filters: [
+                              { name: 'Pictures', extensions: ['jpg', 'jpeg', 'png'] }
+                        ]
+                  });
+                  pathProm.then(function(i) {
+                        var path = i.filePaths[0];
+                        console.log(path);
+                        if (path != undefined) 
+                              document.getElementById("proj_picture").innerHTML = path;
+                  });
+            }
+
             function createNodeFromHtml(html) {
                   var div = document.createElement("div");
                   div.innerHTML = html.trim();
@@ -148,7 +166,6 @@
                         <button id="model_select'+ curModNo +'" onclick="selectModel()">Select model</button>\
                         <p id="model_name'+ curModNo +'" class="mod_name info"></p>\
                         <label> Details about model quality: <input type="textarea" id="model_details'+ curModNo +'" class="mod_det"></label>\
-                        <label> Size of model (in MB): <input type="number" id="model_size'+ curModNo + '" class="mod_siz"> </label>\
                         <button id="remove'+ curModNo +'">Remove model</button>\
                    </div>\
                   ');
@@ -169,12 +186,13 @@
                               return obj;
                         }, {}),
                         path: document.getElementById("proj_path").innerHTML,
+                        imagePath: document.getElementById("proj_picture").innerHTML,
                         orbitControl: document.querySelector('input[name="proj_type"]:checked').value != "inside",
                         languages: enabledLanguages,
                         models: Array.from(document.getElementsByClassName("model_info")).map(x => {return {
                               model_sr: x.querySelector(".mod_name").innerHTML,
                               short_comment: x.querySelector(".mod_det").value,
-                              file_size: x.querySelector(".mod_siz").value
+                              file_size: ""
                         }})
                   };
                   //console.log(toSend);

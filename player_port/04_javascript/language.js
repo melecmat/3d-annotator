@@ -101,7 +101,8 @@ var Language = (function () {
      * @param {String} toTranslate -- key to translation that I want to get
      */
     function translate (toTranslate) {
-        return Translations[lang][toTranslate];
+        return Translations.en[toTranslate]; // THIS IS BECAUSE WE WANT ONLY ENGLISH IN THE INTERFACE ON DESKTOP
+        // IN THE WEB VERSION THIS FUNCTION IS Translations[lang][toTranslate];
     }
 
     function prepareData() {

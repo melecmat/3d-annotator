@@ -3,8 +3,10 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
 const { remote } = require('electron');
 const fs = require("fs"); 
+const fsExtra = require('fs-extra');
 const ProgressBar = require('electron-progressbar');
-//const path = require("path");
+const Jimp = require("jimp");
+var progressBar;
 
 // Create the browser window.
 var mainWindow;
@@ -56,30 +58,34 @@ function initApp() {
           e.preventDefault();
         } else {
             // erase temporary files
-            rmDir = function(dirPath) {
-                try { var files = fs.readdirSync(dirPath); }
-                catch(e) { return; }
-                if (files.length > 0)
-                  for (var i = 0; i < files.length; i++) {
-                    var filePath = dirPath + '/' + files[i];
-                    if (fs.statSync(filePath).isFile()) {
-                        if (files[i] != "player_debug.html")
-                            fs.unlinkSync(filePath);
-                    } else
-                      rmDir(filePath);
-                  }
-                try { var files = fs.readdirSync(dirPath); }
-                catch(e) { return; }
-                if (files.length == 0)
-                    fs.rmdirSync(dirPath);
-            };
-
-            rmDir("player_port/player");
+            eraseTemporaries();
             serverWindow.close();
         }
       });
 
 }
+
+function eraseTemporaries() {
+    rmDir("player_port/player");
+}
+
+function rmDir(dirPath) {
+    try { var files = fs.readdirSync(dirPath); }
+    catch(e) { return; }
+    if (files.length > 0)
+      for (var i = 0; i < files.length; i++) {
+        var filePath = dirPath + '/' + files[i];
+        if (fs.statSync(filePath).isFile()) {
+            if (files[i] != "player_debug.html")
+                fs.unlinkSync(filePath);
+        } else
+          rmDir(filePath);
+      }
+    try { var files = fs.readdirSync(dirPath); }
+    catch(e) { return; }
+    if (files.length == 0)
+        fs.rmdirSync(dirPath);
+};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -108,8 +114,10 @@ ipcMain.on("getRPOP", function () {
     mainWindow.webContents.send("realPathOfProject", currentPath);
 });
 ipcMain.on("goHome", () => {
+    eraseTemporaries();
     mainWindow.loadFile("welcome_screen.html");
 });
+ipcMain.on("focusMain", () => { mainWindow.blur(); mainWindow.focus(); })
 ipcMain.on("openHelp", () => {
     hlp = new BrowserWindow({
     });
@@ -151,6 +159,7 @@ ipcMain.on("initGalleryWindow", function (e, info) {
 });
 
 function openProject(e, pat) {
+    console.log(pat);
     if (!correctPath(pat)) {
         // open refusal dialog
         dialog.showMessageBox(null, {
@@ -164,7 +173,7 @@ function openProject(e, pat) {
     var ncp = require('ncp').ncp;
  
     ncp.limit = 16;
-    lastFold = pat.split(pat.sep).pop();
+    lastFold = pat.split(path.sep).pop();
     //console.log(lastFold);
     ncp(pat, "player_port/player/" + lastFold, function (err) {
         if (err) {
@@ -185,13 +194,16 @@ function correctPath(path) {
     return fs.existsSync(path + "/info.json");
 }
 
-function createProject(e, data) {
-    if (!correctData(data)) return; // dialogs should be taken care of in correctData function
-    
-    // create and fire up progressbar
-    var progressBar = new ProgressBar({
+function startProgressbar() {
+    progressBar = new ProgressBar({
         text: 'Setting up project...',
-        detail: 'Optimizing models, copying files, may take a few minutes'
+        detail: 'Optimizing models, copying files, may take a few minutes',
+        browserWindow: {
+            parent: mainWindow,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        }
     });
 
     progressBar
@@ -201,116 +213,172 @@ function createProject(e, data) {
         })
         .on('aborted', function() {
             console.info(`aborted...`);
+        }); 
+}
+
+function createProject(e, data) {
+    (async () => {
+        if (!correctData(data)) return; // dialogs should be taken care of in correctData function
+        
+        // create and fire up progressbar
+        startProgressbar();
+
+        fs.copyFile(data.imagePath, path.join(data.path, "background.jpg"), (err) => {if (err) console.log(err)})
+        //console.log("Written json to " + path.join(data.path, "info.json"));
+        // copy models and perform some operations on them
+        
+        for (var model of data.models) {
+            var ext = model.model_sr.slice(-4);
+            console.log(ext);
+            var newModelPath = path.join(data.path, path.basename(model.model_sr).split(".")[0] + ".glb");
+            if (ext == ".glb") {
+                fs.copyFileSync(model.model_sr, newModelPath);
+            } else if (ext == "gltf") {
+                var gltf = await fsExtra.readJSON(model.model_sr);
+                await simplifyModel(newModelPath, gltf/*fsExtra.readJsonSync(model.model_sr)*/);
+            } else {
+                // must be .obj
+                console.log("Simplifying model");
+                await obj2simplifiedGlb(model.model_sr, newModelPath);
+            }
+        }
+    
+        // create info.json
+        data.models = data.models.map((model) => {
+            var folder = data.path.split(path.sep).pop();
+            var file = model.model_sr.split(path.sep).pop().split(".")[0] + ".glb";
+            const {size} = fs.statSync(path.join(data.path, file));
+            model.file_size = Math.round(size / 1000000.0) + "";
+            model.model_sr = folder + "/" + file;
+            // get model size
+            
+            return model;
         });
+        var info = {
+            "title": "", // TODO -- title is obsolete?
+            "languages": data.titles,
+            "player": {
+                "orbit_control": data.orbitControl,
+                "model_src": data.models.length == 1 ? data.models[0].model_sr : "",
+                "qualities": data.models,
+                "camera_position": "0 0 0",
+                "model_scale": "30",
+                "model_rotation": "-90, 0, 0",
+                "backgound_color": "black"
+            },
+            "annotations": {},
+            "galleries": []
+        }
+    
+        // save JSON file
+        fs.writeFileSync(path.join(data.path, "info.json"), JSON.stringify(info));
+    
+        console.log("Done");
+        
+        
+    })()
+    .then( () => {
+        progressBar.setCompleted();
+        openProject(null, data.path);
+    })
+    .catch(err => {
+        console.log(err); 
+        progressBar.setCompleted();
+        // TODO -- alert user and delete files
+    })
+}
+
+/**
+ * Async function that converts .obj model into a draco compressed .glb model.
+ * @param {string} modelPath path of the input model
+ * @param {string} newPath path of the output model, including its name (correctly should be .glb)
+ */
+async function obj2simplifiedGlb(modelPath, newPath) {
+
+    const obj2gltf = require('obj2gltf');
+    
+    console.log("model path " + modelPath);
+    console.log("to path " + newPath);
+    var pathWithoutLast = path.dirname(newPath);
+    if (!fs.existsSync(pathWithoutLast + '/tmp/')) fs.mkdirSync(pathWithoutLast + '/tmp/');
 
     
-    //console.log("Written json to " + path.join(data.path, "info.json"));
-    // copy models and perform some operations on them
+    var gltf = await obj2gltf(modelPath, {separate: true, outputDirectory: pathWithoutLast + '/tmp/', resourceDirectory: pathWithoutLast + '/tmp/'});
+   
     
-    for (var model of data.models) {
-        var ext = model.model_sr.slice(-4);
-        var newModelPath = path.join(data.path, path.basename(model.model_sr).split(".")[0] + ".glb");
-        if (ext == ".glb") {
-            fs.copyFileSync(model.model_sr, newModelPath);
-        } else if (ext == "gltf") {
-            // TODO --- texture optimization, draco compression and convert to .glb
-        } else {
-            // must be .obj
-            simplifyModel(model.model_sr, newModelPath);
+
+    await simplifyModel(newPath, gltf);
+
+}
+
+/**
+ * Async function that optimizes .gltf model -- mainly its textures and converts it to .glb
+ * @param {*} pathWithoutLast 
+ * @param {*} gltf 
+ */
+async function simplifyModel (newPath, gltf) {
+    
+    var pathWithoutLast = path.dirname(newPath);
+    if (!fs.existsSync(pathWithoutLast + '/tmp/')) fs.mkdirSync(pathWithoutLast + '/tmp/');
+    const gltfPipeline = require('gltf-pipeline');
+    
+    const options = {
+        separateTextures: true,
+        dracoOptions: {
+            compressionLevel: 10
+        },
+        resourceDirectory: pathWithoutLast + '/tmp/'
+    };
+
+    var results = await gltfPipeline.processGltf(gltf, options);
+            
+    // TODO -- probably isnt needed       
+    //fsExtra.writeJsonSync(pathWithoutLast + '/tmp/' + 'model-separate.gltf', results.gltf);
+    // Save separate resources
+    const separateResources = results.separateResources;
+    for (const relativePath in separateResources) {
+        if (separateResources.hasOwnProperty(relativePath)) {
+            const resource = separateResources[relativePath];
+            fsExtra.writeFileSync(pathWithoutLast + '/tmp/' + relativePath, resource);
         }
     }
 
-    // create info.json
-    data.models = data.models.map((model) => {
-        var folder = data.path.split(path.sep).pop();
-        var file = model.model_sr.split(path.sep).pop();
-        model.model_sr = folder + "/" + file;
-        return model;
-    });
-    var info = {
-        "title": "", // TODO -- title is obsolete?
-        "languages": data.titles,
-        "player": {
-            "orbit_control": data.orbitControl,
-            "model_src": data.models.length == 1 ? data.models[0].model_sr : "",
-            "qualities": data.models,
-            "camera_position": "0 0 0",
-            "model_scale": "30",
-            "model_rotation": "-90, 0, 0",
-            "backgound_color": "black"
-        },
-        "annotations": {},
-        "galleries": []
-    }
+    // for each resource -- do img compression
+    let dirCont = fs.readdirSync(pathWithoutLast + '/tmp');
 
-    // save JSON file
-    fs.writeFileSync(path.join(data.path, "info.json"), JSON.stringify(info));
-
-    console.log("Done");
-    progressBar.setCompleted();
-    openProject(null, data.path);
-}
-
-// TODO!!!!!
-function simplifyModel(modelPath, newPath) {
-    const obj2gltf = require('obj2gltf');
-    const gltfPipeline = require('gltf-pipeline');
-    const fsExtra = require('fs-extra');
-
-    obj2gltf(modelPath)
-    .then(function(gltf) {
-        // converted into gltf
-        //const data = Buffer.from(JSON.stringify(gltf));
-        //fs.writeFileSync(newPath + '/tmp.gltf', data);
-
-        const options = {
-            separateTextures: true,
-            dracoOptions: {
-                compressionLevel: 10
-            }
-        };
-
-        gltfPipeline.processGltf(gltf, options)
-        .then(function(results) {
-            fsExtra.writeJsonSync(newPath + '/tmp/' + 'model-separate.gltf', results.gltf);
-            // Save separate resources
-            const separateResources = results.separateResources;
-            for (const relativePath in separateResources) {
-                if (separateResources.hasOwnProperty(relativePath)) {
-                    const resource = separateResources[relativePath];
-                    fsExtra.writeFileSync(newPath + '/tmp/' + relativePath, resource);
-                }
-            }
-
-            // for each resource -- do img compression
-            let dirCont = fs.readdirSync(newPath + '/tmp');
-            dirCont.filter(function(elm) {return elm.match(/.*\.(jpg?jpeg?JPEG?JPG)/ig);}).map(function (el) {
-                Jimp.read(newPath + '/tmp/' + el)
-                .then(img => {
-                    return img
-                    .quality(85) // set JPEG quality
-                    .write(newPath + '/tmp/' + el); // save
-                })
-                .catch(err => {
-                    console.error(err);
-                });
-            });
-
-
-            // save as draco glb -- TODO
-            gltfPipeline.gltfToGlb(gltf)
-            .then(function(results) {
-                fsExtra.writeFileSync('model.glb', results.glb);
-            });
-
+    var promises = dirCont/*.filter(function(elm) {return elm.match(/.*\.(jpg?jpeg?JPEG?JPG)/ig);})*/.map(function (el) {
+        return Jimp.read(pathWithoutLast + '/tmp/' + el)
+        .then(img => {
+            return img
+            .quality(95) // set JPEG quality
+            .write(pathWithoutLast + '/tmp/' + el.split(".")[0] + ".jpg"); // save aways as .jpg
+        })
+        .catch(err => {
+            console.error(err);
         });
+    }); 
 
-    });
-    // TODO -- should work the same as obj2optimizedGlb
+    // when Jimp is done
+    await Promise.all(promises);
+
+    // check for .png -- were changed to .jpg
+    results.gltf.images = results.gltf.images.map(im => {
+        if (im.uri.slice(-3) == "png") {
+            im.uri = im.uri.split(".")[0] + ".jpg";
+        }
+        return im;
+    })
+
+        
+    // save as draco glb
+    var glbRes = await gltfPipeline.gltfToGlb(results.gltf, { resourceDirectory: pathWithoutLast + "/tmp"});
+    
+    fsExtra.writeFileSync(newPath, glbRes.glb);
+    rmDir(pathWithoutLast + "/tmp");
+    console.log("Model should be ready.");
 }
 
 function correctData(data) {
-    //console.log(data);
     var ret = true;
     var msg = "";
     if (data.path === "") {
@@ -351,7 +419,6 @@ function createGalleryWindow() {
         }
     });
 
-    // TODO -- doesnt work for some reason!!!
     galleryWindow.on('close', function(e) {
         const choice = require('electron').dialog.showMessageBoxSync(this,
           {

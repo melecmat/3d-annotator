@@ -1,1 +1,47 @@
-<a href="../welcome_screen.html"> <button>Back</button></a>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="../css/skeleton.css" rel="stylesheet">
+    </head>
+
+<body>
+    <style>
+        body {
+            margin : 2em
+        }
+    </style>
+    
+    <h1>Help</h1>
+    <p>
+        This desktop app is a companion to the <a href="https://github.com/melecmat/melecmat.github.io">3D Viewer</a> web app. It enables creation and modification
+        of projects, that can be viewed and published using the 3D Viewer.
+        It handles import and optimization of 3D models, basic configuration and multi-language annotation.
+    </p>
+
+    <p>
+        This is an early betaversion. Use with caution! Any issues, bugs, errors can be reported <a href="https://github.com/melecmat/3d-annotator/issues">here</a>  or
+        to my email address: melecmat [at] fel.cvut.cz. 
+    </p>
+
+    <h2> Creating new project</h2>
+    <p>
+        Process of creating a new project is rather straightforward. All you need to do is click <i>CREATE NEW PROJECT</i>
+        in the main menu and follow instructions to fill out the form.
+    </p>
+
+    <h2> Opening and modifying an existing project </h2>
+    <p>
+        
+    </p>
+    
+    <script>
+        document.querySelectorAll("a").forEach(a => {
+            a.addEventListener("click", e => {
+                e.preventDefault();
+                require('electron').shell.openExternal(a.getAttribute("href"));
+            })
+        });
+    </script>
+
+</body>

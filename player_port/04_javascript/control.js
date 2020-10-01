@@ -74,6 +74,13 @@ AFRAME.registerComponent ('change-position', {
 
 var moveObject;
 
+AFRAME.registerComponent('look-at-camera', {
+    tick: function() {
+        var camPos = document.getElementById("camera").components.camera.camera.getWorldPosition(new THREE.Vector3());
+        this.el.object3D.lookAt(camPos);
+    }
+});
+
 /** 
  * clickable component for popup window
 */
@@ -99,6 +106,13 @@ AFRAME.registerComponent ('info-window', {
         var cancelControls = function (e) {
             if (e.code != "Escape") return;
             el.removeAttribute("transform-controls");
+
+            if (json_obj.player.orbit_control) {
+                // has to restart orbit control
+                document.querySelector("[camera]").pause();
+                document.querySelector("[camera]").components["orbit-controls"].controls.enabled = true
+            }
+
             // saving into json
             json_obj.annotations[window_id].position = el.getAttribute("position");
             shiftPressed = false;
@@ -132,6 +146,7 @@ AFRAME.registerComponent ('info-window', {
                 shiftPressed = true;
                 el.setAttribute("opacity", "0.6");
                 el.setAttribute("transform-controls", "");
+                if (json_obj.player.orbit_control) document.querySelector("[camera]").components["orbit-controls"].controls.enabled = false;
                 document.addEventListener("keydown", cancelControls);
             }
         });
@@ -368,15 +383,36 @@ function getCameraFaceDirection() {
     return direction;
 }
 
+/**
+ * TODO -- change the name of the function into what it actually does -- or consider splitting it, as would naturally occur
+ * @param {*} howFar 
+ */
 function getInFrontOfCameraPos(howFar) {
     var cameraDirection = getCameraFaceDirection();
-    var cameraPosition = document.getElementById("camera").getAttribute("position");
-    //cameraDirection.multiplyScalar(howFar);
-    var newPos = {};
-    newPos.x = cameraPosition.x + howFar*cameraDirection.x
-    newPos.y = cameraPosition.y + howFar*cameraDirection.y 
-    newPos.z = cameraPosition.z + howFar*cameraDirection.z
-    return newPos;
+    var cameraPosition = document.getElementById("camera").components.camera.camera.getWorldPosition(); // updated to world position -- otherwise was local orbit controls pos
+    
+    var noorbit = () => {
+        // in case of normal controls, this is done
+        var newPos = {};
+        newPos.x = cameraPosition.x + howFar*cameraDirection.x
+        newPos.y = cameraPosition.y + howFar*cameraDirection.y 
+        newPos.z = cameraPosition.z + howFar*cameraDirection.z
+        return newPos;
+    };
+
+    if (json_obj.player.orbit_control) { // put them some distance away from the model, on the vector leading to camera global position
+        var ray = new THREE.Raycaster(cameraPosition, cameraDirection.clone());
+        var rayIntersects = ray.intersectObject(document.getElementById("gltf_model").object3D, true);
+        if (rayIntersects.length == 0) return noorbit();
+        var intersection = rayIntersects[0].point;
+
+        var newPos = {};
+        newPos.x = intersection.x - howFar*cameraDirection.x
+        newPos.y = intersection.y - howFar*cameraDirection.y 
+        newPos.z = intersection.z - howFar*cameraDirection.z
+        return newPos;
+    }
+    return noorbit();
 }
 
     
