@@ -226,9 +226,11 @@ var AnnotationWindow = (function () {
         }
         
         try {
-            document.getElementById("position_inp").value = get_entity_position_string(
+            pos = document.getElementById("rendered" + annotation_id).getAttribute("position");
+            document.getElementById("position_inp").value = toFixedTruncate(pos.x, 3) + " " + toFixedTruncate(pos.y, 3) + " " + toFixedTruncate(pos.z, 3);
+            /*get_entity_position_string(
                 document.getElementById("rendered" + annotation_id), false
-                )
+                )*/
         } catch(e) {}
         document.getElementById("no_inp").value = get_number_from_string(annotation_id);
         document.getElementById("current_edited").innerHTML = annotation_id;
@@ -354,6 +356,7 @@ var AnnotationWindow = (function () {
         var current_annotation = document.getElementById("current_edited").innerHTML;
         var new_position = document.getElementById("position_inp").value;
         var new_number = document.getElementById("no_inp").value;
+    
         new_number = parseInt(new_number);
         //console.log(current_annotation);
         if (!check_if_valid(new_position, new_number)) {
@@ -379,6 +382,7 @@ var AnnotationWindow = (function () {
             // else -- continue executing
         }
         
+        // if we need to swap annotations
         if (new_id in json_obj.annotations) {
             if (new_id != current_annotation) {
                 // SWAP
@@ -386,6 +390,7 @@ var AnnotationWindow = (function () {
                 change_popup(current_annotation, json_obj.annotations[new_id]);
                 current_annotation = new_id;
             }
+        // if we need to just rename the number
         } else {
             delete json_obj.annotations[current_annotation];
             var rendered_annot = document.getElementById("rendered" + current_annotation);
@@ -398,7 +403,7 @@ var AnnotationWindow = (function () {
             try {
                 document.getElementById("edit" + current_annotation).setAttribute("id", "edit" + new_id);
             } catch (e) {}
-            json_obj.annotations[new_id] = {};
+            json_obj.annotations[new_id] = {"texts":{}};
             current_annotation = new_id;
         }
         //}
@@ -406,10 +411,10 @@ var AnnotationWindow = (function () {
 
         for (lang in json_obj.languages) {
             if (json_obj.languages[lang] == "") continue;
+            if (json_obj.annotations[current_annotation].texts[lang] == null) json_obj.annotations[current_annotation].texts[lang] = {};
             json_obj.annotations[current_annotation].texts[lang].heading = document.getElementById("heading_inp" + lang).value;
             json_obj.annotations[current_annotation].texts[lang].text = $('#editor' + lang).trumbowyg('html');
         }
-        
         // manipulate actual annotation
         change_popup(current_annotation, json_obj.annotations[current_annotation]);
         //$('#editor').trumbowyg('html', '');
@@ -425,7 +430,7 @@ var AnnotationWindow = (function () {
         close_windows();
     }
 
-    /** TODO -- multilanguage version!!!!
+    /** 
      * For building brand new annotation
      * @param {*} new_position 
      * @param {*} new_id 
@@ -507,6 +512,7 @@ var AnnotationWindow = (function () {
         // save to local storage
         //save_to_local_storage();
         //let data = JSON.stringify(json_obj);
+        
         if (!is_dirty && Object.values(dirty).every(val => val == false)) return; // does not have to save when no change has been done
         if (dirty.rot) {
             // read rotation and set to json
@@ -550,7 +556,6 @@ var AnnotationWindow = (function () {
 
     /**
      * Puts annotation in front of camera view.
-     * TODO -- make this work for orbit controls!!
      */
     function make_annot_in_front() {
         var newId = "uniqueID" + find_empty_id();
@@ -558,11 +563,10 @@ var AnnotationWindow = (function () {
         if (json_obj.player.orbit_control) strpos = getInFrontOfCameraPos(3);
         else strpos = getInFrontOfCameraPos(3);
         strpos = Object.values(strpos).reduce((bef, next) => bef + " " + next);
-        console.log(strpos)
         var mockup_json = {
             "edit_mode" : true,
             "player" : {
-                "orbit_control" : true,
+                "orbit_control" : json_obj.orbit_control,
             },
             "annotations" : {
                 [ newId] : {
@@ -584,7 +588,6 @@ var AnnotationWindow = (function () {
             "position" : strpos
         }
 
-        console.log(newId);
         make_edit_button_apear(document.getElementById("delete" + newId));
         make_edit_button_apear(document.getElementById("edit" + newId));
 
@@ -618,7 +621,7 @@ var AnnotationWindow = (function () {
             // reload -- maybe -- or more effective -- start only gallery
             //var el = document.getElementById('gal_wrapper' + id);
             //el.remove();
-            GalleryControl.build_gallery(gallery_info);
+            setTimeout(GalleryControl.build_gallery(gallery_info), 1000);
         });
         
 
@@ -657,7 +660,7 @@ var AnnotationWindow = (function () {
                 var el = document.getElementById('gal_wrapper' + id);
                 el.remove();
                 console.log("removed");
-                GalleryControl.build_gallery(gallery_info);
+                setTimeout(GalleryControl.build_gallery(gallery_info), 2000);
             });
         });
 
@@ -676,9 +679,13 @@ var AnnotationWindow = (function () {
     }
 
     function change_camera_begin_pos() {
-        var posrot = get_entity_position_string(document.getElementById("camera"), true);
+        var posrot = get_camera_position_string(true);
         json_obj.player.camera_position = posrot.split(" ").slice(0, 3).join(" ");
         json_obj.player.camera_rotation = posrot.split(" ").slice(-2).join(" ");
+        is_dirty = true;
+    }
+
+    function set_dirty() {
         is_dirty = true;
     }
 
@@ -703,6 +710,7 @@ var AnnotationWindow = (function () {
 
             put_listeners();
         },
+        set_dirty: set_dirty,
 
         make_annot_in_front : make_annot_in_front,
         make_edit_buttons_apear : make_edit_buttons_apear,

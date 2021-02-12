@@ -239,6 +239,13 @@ var App = (function () {
 
     function save_json() {
         ipcRenderer.sendSync("save_json", json_obj);
+
+        // say we have saved it
+        var inf = document.getElementById("saved_info");
+        inf.classList.remove("hidden");
+        inf.classList.add("visible");
+        console.log("Saved");
+        setTimeout(() => {inf.classList.remove("visible"); inf.classList.add("hidden")}, 3000);
     }
 
     return {

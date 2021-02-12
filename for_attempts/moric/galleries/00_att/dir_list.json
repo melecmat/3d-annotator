@@ -1,8 +1,1 @@
-{
-    "im1.jpg" : {
-        "cs" : "Popisek v češtině.",
-        "en" : "Annotation in English.",
-        "de" : "Deutsch."
-    },
-    "im2.jpg" : {}
-}
+{"im1.jpg":{"cs":"Popisek v češtině.","en":"Annotation in English.","de":"Deutsch."},"im2.jpg":{"cs":"nova anotace","en":"new annotat ion","de":"neue annot -- verbedeuntung\nbli blah"},"background.jpg":{"cs":"","en":"newww","de":""}}

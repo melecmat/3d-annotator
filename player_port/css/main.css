@@ -209,6 +209,31 @@ button.ed_button.visible {
 }
 
 
+#saved_info {
+    background-color: white;
+    border-color: #2196F3;
+    border-width: 0.7em;
+    border-radius: 10px;
+    padding: 0.5em;
+    position:fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    z-index: 5000;
+}
+
+.visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 2s linear;
+}
+
+.hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 2s, opacity 2s linear;
+}
+
 /*MOBILE*/
 @media only screen and (pointer:coarse) {
     .popup {

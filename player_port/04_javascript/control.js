@@ -72,7 +72,6 @@ AFRAME.registerComponent ('change-position', {
     }
 });
 
-var moveObject;
 
 AFRAME.registerComponent('look-at-camera', {
     tick: function() {
@@ -80,6 +79,8 @@ AFRAME.registerComponent('look-at-camera', {
         this.el.object3D.lookAt(camPos);
     }
 });
+
+
 
 /** 
  * clickable component for popup window
@@ -114,9 +115,10 @@ AFRAME.registerComponent ('info-window', {
             }
 
             // saving into json
-            json_obj.annotations[window_id].position = el.getAttribute("position");
+            json_obj.annotations[window_id].position = Object.values(el.getAttribute("position")).reduce((prev, cur) => prev + " " + cur);
+            console.log(json_obj.annotations[window_id].position)
             shiftPressed = false;
-            // TODO -- change position of annotation in JSON
+            AnnotationWindow.set_dirty();
             el.setAttribute("opacity", "1");
             document.removeEventListener("keydown", cancelControls);
         };
@@ -277,7 +279,13 @@ AFRAME.registerComponent('big_model', {
         var el = this.el;
 
         // CAMERA POSITION ROTATION SETUP -- here cause I couldnt be bothered with creating new component
-        if (json_obj.player.camera_rotation != null) ControlPanel.go_to_position(null, json_obj.player.camera_position + " " + json_obj.player.camera_rotation);
+        if (json_obj.player.camera_rotation != null) {
+            if (json_obj.player.orbit_control) {
+
+            } else {
+                ControlPanel.go_to_position(null, json_obj.player.camera_position + " " + json_obj.player.camera_rotation);
+            }
+        }
 
        this.el.addEventListener('model-loaded', e => {
            document.querySelector("#loading_screen").remove();
@@ -348,21 +356,31 @@ function radToDeg(radians) {
 
 
 /**
- * Not used?
- * Gets the string representing position and rotation if specified of given aframe entity.
- * @param {*} entity aframe entity
+ * Gets the string representing position and rotation if specified of the aframe camera.
  * @param {Boolean} rotation if you want to get rotation
  */
-function get_entity_position_string(entity, rotation) {
+function get_camera_position_string(rotation) {
+    var entity = document.getElementById("camera");
     var posrot = "";
-    var pos = entity.getAttribute("position");
+    var pos = new THREE.Vector3();
+    if (json_obj.player.orbit_control) {
+        entity.components.camera.camera.getWorldPosition(pos); // TODO check if I am using this function in other than camera context..
+    } else pos = entity.getAttribute("position");
+    //var pos = entity.getAttribute("position");
+    console.log("POS" + pos);
     if (pos == null) return posrot;
     posrot = toFixedTruncate(pos.x, 3) + " " + toFixedTruncate(pos.y, 3) + " " + toFixedTruncate(pos.z, 3);
     if (rotation) {
-        var rot_x = entity.components['touch-controls'].pitchObject.rotation.x;
-        var rot_y = entity.components['touch-controls'].yawObject.rotation.y;
-        posrot += " " + toFixedTruncate(rot_x, 3) + " " + toFixedTruncate(rot_y, 3);
+        try {
+            var rot_x = entity.components['touch-controls'].pitchObject.rotation.x;
+            var rot_y = entity.components['touch-controls'].yawObject.rotation.y;
+            posrot += " " + toFixedTruncate(rot_x, 3) + " " + toFixedTruncate(rot_y, 3);
+        } catch(e) {
+            posrot += " 1 1" 
+        }
+        
     }
+    console.log("posrot: " + posrot);
     return posrot;
 }
 

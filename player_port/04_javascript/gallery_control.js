@@ -3,9 +3,12 @@
  */
 var GalleryControl = (function () {
     function build_gallery(gallery_obj) {
+        console.log("GALLERY -- gonna request");
+        console.log(gallery_obj);
         var oReq = new XMLHttpRequest();
         var json;
         oReq.onload = function () {
+            console.log(this.responseText);
             json = JSON.parse(this.responseText);
             //console.log("json length " + json.length);
             Language.selectGalleryLanguage(json);

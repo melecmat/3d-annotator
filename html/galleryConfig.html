@@ -10,7 +10,11 @@
         <button id="save_gallery" onclick="saveGallery()">Save Changes</button>
        <button id="add_files" onclick="add_files()">Add Files</button>
 
+       <div id="loader" class="invisible"></div>
+       
+
        <div id="config_div"></div>
+
 
        <style>
             img {
@@ -32,13 +36,35 @@
                 vertical-align: middle;
             }
 
+            .invisible {
+                display: none
+            }
+
+            #loader {
+                border: 16px solid #f3f3f3; /* Light grey */
+                border-top: 16px solid #3498db; /* Blue */
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                animation: spin 2s linear infinite;
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
        </style>
 
       </body>
 
     <script id="gallery_entry_template" type="text/x-handlebars-template">
         <div id="img_config{{id}}" class="img_conf">
-            <img src="../{{gal_path}}/full/{{id}}"> <!-- TODO -- check the path -->
+            <img src="{{gal_path}}/{{id}}"> <!-- TODO -- check the path -->
 
             <div>
                 {{#each texts}}
@@ -46,6 +72,7 @@
                     <textarea class="{{@key}}">{{this}}</textarea></label></p>
                 {{/each}}
             </div>
+            <button id="{{id}}" onclick="removeImage(this)">Remove</button>
         </div>
     </script>
 
@@ -68,7 +95,9 @@
             console.log("received data");
             annotation_obj = data.annotation_obj;
             gallery_path = data.gallery_path;
+            console.log("gallery_path " + gallery_path);
             empty_annot = data.empty_annot;
+            
             // put the datat into template:::
             process_gallery_json();
         });
@@ -87,6 +116,8 @@
                 //console.log(annotation_obj);
                 //console.log(annotation_obj[annotation]);
                 // if empty object
+                console.log("Gallery path " + gallery_path);
+                console.log("name of file " + annotation);
                 if (Object.keys(annotation_obj[annotation]).length === 0 && annotation_obj[annotation].constructor === Object) annotation_obj[annotation] = empty_annot; 
                 console.log(annotation_obj[annotation]);
                 div.innerHTML += template({id : annotation, texts : annotation_obj[annotation], gal_path : gallery_path});
@@ -94,16 +125,26 @@
             }
         }
 
+        const util = require('util');
+        const copyFilePromise = util.promisify(fs.copyFile);
+
+        function copyImages(destDir, files) {
+            return Promise.all(files.map(f => {
+            return copyFilePromise(f, destDir + "/" + f.split('\\').pop().split(".")[0] + ".jpg");
+            }));
+        }
+
         /**
         * 
         **/
         function add_files() {
             const { dialog } = require('electron').remote;
+            document.getElementById("loader").classList.remove("invisible");
             dialog.showOpenDialog(
                 {
                     properties: ['openFile', 'multiSelections'],
                     filters: [
-                        { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }
+                        { name: 'Images', extensions: ['jpg', 'jpeg'] }
                     ]
                 }
             ).then(function(i) {
@@ -114,29 +155,49 @@
                     console.log("Something inputted."); 
                     paths.filter((path) => { return !(path.split('\\').pop() in annotation_obj)});
                     // make compressed version and save it to gallery_path
-                    compress_images(paths);
                     
-                    for (path of paths) {
-                        if (path.split('\\').pop() in annotation_obj) continue; // in case of adding the same image
 
-                        // copy image to gallery_path/full
-                        fs.copyFile(path, gallery_path + "/full/" + path.split('\\').pop(), (err) => {
-                            if (err) throw err;
-                        });
-
-                        // add image name into the annotation_obj
-                        annotation_obj[path.split('\\').pop()] = empty_annot; // meaning {en:"", cs:"" ...}
-                    }
-
-                    newly_added = newly_added.concat(paths);
-                    console.log("newly added: " + newly_added);
-                    // add graphical representation -- using some function that processes json_obj
-                    process_gallery_json();
+                    copyImages(gallery_path + "/full/", paths.filter(x => !(x.split('\\').pop() in annotation_obj))).then(() => {
+                        console.log("done");
+                        for (path of paths) {
+                            if (path.split('\\').pop() in annotation_obj) continue; // in case of adding the same image
+                                annotation_obj[path.split('\\').pop().split(".")[0] + ".jpg"] = empty_annot; // meaning {en:"", cs:"" ...}
+                        }
+                        compress_images(paths);
+                        }).catch(err => {
+                        console.log(err);
+                    });
 
                     // set dirty flag for json and files TODO
                 }
             });
         }
+
+
+        function removeImage(img_div) {
+            console.log("Gonna delete");
+            img_id = img_div.id;
+
+            delete annotation_obj[img_id];
+            // delete images
+            fs.unlink(gallery_path + "/full/" + img_id, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+            });
+            fs.unlink(gallery_path + "/" + img_id, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+            });
+            console.log("img_config" + img_id);
+            document.getElementById("img_config" + img_id).remove();
+
+            newly_added = newly_added.filter(x => x.split('\\').pop().split(".")[0] + ".jpg" != img_id);
+        }
+    
 
 
         function compress_images(paths) {
@@ -183,21 +244,49 @@
             }*/
 
             const Jimp = require("jimp");
-
-            for (path of paths) {
-                console.log(path)
-                var save_path = gallery_path + "/" + path.split(path.sep).pop().split(".")[0] + ".jpg";
+            const path = require("path");
+            /*for (p of paths) {
+                console.log(p)
+                var save_path = gallery_path + "/" + p.split(path.sep).pop().split(".")[0] + ".jpg";
                 console.log(save_path);
-                (async () => {
-                    Jimp.read(path, (err, lenna) => {
-                        if (err) throw err;
-                        lenna
-                        .quality(85) // set JPEG quality -- TODO -- check if works for .png too??
-                        .write(save_path)// save
-                    });
-                })();
-            }
+                
+                Jimp.read(p)
+                .then(lenna => {
+                    lenna
+                    .quality(85) // set JPEG quality -- TODO -- check if works for .png too??
+                    .write(save_path)// save
+                })
+                .catch(err => {
+                    console.error(err);
+                });
             
+            }*/
+
+            var promises = paths.map(p => {
+                    return Jimp.read(p)
+                        .then(lenna => {
+                            return lenna
+                            .quality(20) // set JPEG quality -- TODO -- check if works for .png too??
+                            .write(gallery_path + "/" + p.split(path.sep).pop().split(".")[0] + ".jpg")
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            reject(err);
+                        })
+                    }
+                )
+
+            Promise.all(promises
+            ).then((v) => {
+                console.log("THEN");
+                console.log(v);
+                newly_added = newly_added.concat(paths);
+                // wait a bit because it had problem loading the image anyway :D
+                setTimeout(function(){
+                    process_gallery_json();
+                    document.getElementById("loader").classList.add("invisible");
+                }, 2000);
+            }); 
         }
 
 

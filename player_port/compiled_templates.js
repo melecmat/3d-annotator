@@ -305,7 +305,7 @@ this["Handlebars"]["templates"]["popup_button"] = Handlebars.template({"1":funct
 
   return "<a-text \r\n    geometry=\"primitive:plane\"\r\n    material=\"transparent:true; opacity:0\"\r\n    value=\""
     + alias3((lookupProperty(helpers,"get_number")||(depth0 && lookupProperty(depth0,"get_number"))||alias2).call(alias1,(data && lookupProperty(data,"key")),{"name":"get_number","hash":{},"data":data,"loc":{"start":{"line":5,"column":11},"end":{"line":5,"column":30}}}))
-    + "\" width=\"6\" align=\"center\"\r\n    look-at-camera=\"\" \r\n    color=\"white\" id=\"rendered"
+    + "\" width=\"6\" align=\"center\"\r\n  font='../Roboto-msdf.json'  look-at-camera=\"\" \r\n    color=\"white\" id=\"rendered"
     + alias3(((helper = (helper = lookupProperty(helpers,"key") || (data && lookupProperty(data,"key"))) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"key","hash":{},"data":data,"loc":{"start":{"line":7,"column":30},"end":{"line":7,"column":38}}}) : helper)))
     + "\"\r\n    class=\"clickable rendered_annotation\" info-window=\" window_id:"
     + alias3(((helper = (helper = lookupProperty(helpers,"key") || (data && lookupProperty(data,"key"))) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"key","hash":{},"data":data,"loc":{"start":{"line":8,"column":66},"end":{"line":8,"column":74}}}) : helper)))

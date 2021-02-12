@@ -18,7 +18,8 @@
         of projects, that can be viewed and published using the 3D Viewer.
         It handles import and optimization of 3D models, basic configuration and multi-language annotation.
     </p>
-
+    
+    
     <p>
         This is an early betaversion. Use with caution! Any issues, bugs, errors can be reported <a href="https://github.com/melecmat/3d-annotator/issues">here</a>  or
         to my email address: melecmat [at] fel.cvut.cz. 
@@ -29,12 +30,77 @@
         Process of creating a new project is rather straightforward. All you need to do is click <i>CREATE NEW PROJECT</i>
         in the main menu and follow instructions to fill out the form.
     </p>
+    <p>
+        Three formats of models are supported: <i> .glb, .gltf, .obj</i>. .glb is the format used by this app, so when you input a .glb model, it is assumed that it is already optimized for web viewing performance and is taken as is.
+        However, if you choose .gltf or .obj model, optimization procedures will automatically be applied. If you are not content with the quality of the resulting model, you can perform some optimization yourself and provide .glb model.  
+        <b>NOTE: </b> quality optimization is experimental now and does not always produce satisfying results. 
+    </p>
 
     <h2> Opening and modifying an existing project </h2>
     <p>
-        
+        Opening an existing project should be simple as well. Use the button <i> OPEN EXISTING PROJECT </i>
+        . You will be provided with a standart system folder selection dialogue. There you should choose the root folder of the project you want to open. Note that invalid root folder might lead to undefined behavior and issues. Once you select the path, you will see a loading screen, which is the same as the one in the web player.
     </p>
     
+    <h3>Control</h3>
+    <p> 
+        Controls are very similar to those provided in the model viewer. Basically, all features from model viewer are present here, but are extended by annotation capabilities. For player controls and features, please refer its page.
+    </p>
+    <p>
+        The annotation capabilities are controlled mostly using the left sliding panel. Some features in the panel can also be accessed using predefined shortcuts. 
+    </p>
+
+    <h3> Features </h3>
+    <h4> Adding annotations </h4>
+        <p>
+            New annotation can be inserted either by pressing button in the left control panel or by using 
+            predefined keyboard shortcut: <i> CTRL + N </i>. 
+            This will create empty annotation, which will be located some predefined distance away from the camera in the centre of its field of view.
+        </p>
+
+    <h4> Changing annotations position </h4>
+        <p>
+            Normal click on the annotation will trigger the annotation popup. After pressing the <i> SHIFT </i> button and clicking the annotation, you will see arrows around the annotarion. These you can use to move the annotation in space.
+        </p>
+        <p>
+            When you are done moving the annotation, you can click <i> ESC </i>, which will hide the arrows.
+        </p>
+
+    <h4> Deleting annotation </h4>
+        <p> Click on the annotation and click the delete button. </p>
+
+    <h4> Changing annotation's contents </h4>
+        <p>
+            When you click on the annotation, you will see the same popup that will be displayed 
+            to the user of the viewer. 
+            Clicking the <i> Edit </i> button will change the popup into its editable form. 
+            For everey language enabled in your project, you will see an editor where you can change annotation's text in the given language.
+        </p>
+        <p>
+            You can also specify annotation's position here by directly inputting three coordinates - however, using the visual arrows should be preferred.
+        </p>
+        <p>
+            Annotation number can also be changed from here. If the number you provide is already used by some annotation, the numbers will be swapped.
+        </p>
+        <p>
+            Importantly, you can also change <b> change or create gallery here </b>. This will happen in a popup. You can choose images to be put into gallery and add annotation in every of your project's languages. 
+        </p>
+        <p>
+            Inserted photos will be automatically processed. This means that a more compressed version of them will be created. This version will be displayed in the gallery and is saving data and speeding up the application's load time. When user clicks on the picture, its full resolution version will be opened in new window.
+        </p>
+
+    <h4> Changing model's rotation </h4>
+    <p> <b> WARNING:</b> this does not work 100 % yet.</p>
+        <p> Press <i>CTRL + R</i>. Graphical rotation controls should appear somewhere. This feature is not available with orbit controlled models. Pressing the <i> CTRL + R </i> shortcut again will hide the controls.</p>
+
+    <h4>
+        Changing camera's initial position 
+    </h4>
+        <p>
+            Corresponding button is provided in the left control panel. It will change
+            camera's begin position to its current position.
+        </p>
+
     <script>
         document.querySelectorAll("a").forEach(a => {
             a.addEventListener("click", e => {

@@ -105,7 +105,7 @@ var ControlPanel = (function () {
      * Will be in a listener.
      */
     function copy_position_rotation() {
-        var posrot = get_entity_position_string(document.getElementById("camera"), true);
+        var posrot = get_camera_position_string(true);
         // for copying text into clipboard
         const el = document.createElement('textarea');
         el.value = posrot;
