@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
-const path = require('path')
+const path = require('path');
 const fs = require("fs"); 
 const fsExtra = require('fs-extra');
 const ProgressBar = require('electron-progressbar');
@@ -48,7 +48,7 @@ function initApp() {
     mainWindow.loadFile('welcome_screen.html');
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function(e) {
         const choice = require('electron').dialog.showMessageBoxSync(this,
@@ -248,7 +248,7 @@ function createGalleryWindow() {
         galleryWindow.show();
     });
 
-    galleryWindow.webContents.openDevTools();
+    //galleryWindow.webContents.openDevTools();
 
     galleryWindow.loadFile("html/galleryConfig.html");
 }

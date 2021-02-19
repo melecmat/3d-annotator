@@ -282,9 +282,9 @@ this["Handlebars"]["templates"]["popup"] = Handlebars.template({"1":function(con
     + ((stack1 = ((helper = (helper = lookupProperty(helpers,"text") || (depth0 != null ? lookupProperty(depth0,"text") : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"text","hash":{},"data":data,"loc":{"start":{"line":4,"column":55},"end":{"line":4,"column":65}}}) : helper))) != null ? stack1 : "")
     + "</span> </div>\r\n    \r\n    <button class=\"button ed_button\" id=\"edit"
     + alias4(((helper = (helper = lookupProperty(helpers,"key") || (data && lookupProperty(data,"key"))) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"key","hash":{},"data":data,"loc":{"start":{"line":6,"column":45},"end":{"line":6,"column":53}}}) : helper)))
-    + "\">Upravit</button>\r\n    <button class=\"button ed_button delete\" id=\"delete"
+    + "\">Edit</button>\r\n    <button class=\"button ed_button delete\" id=\"delete"
     + alias4(((helper = (helper = lookupProperty(helpers,"key") || (data && lookupProperty(data,"key"))) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"key","hash":{},"data":data,"loc":{"start":{"line":7,"column":54},"end":{"line":7,"column":62}}}) : helper)))
-    + "\">Smazat</button>\r\n    \r\n</div>\r\n";
+    + "\">Delete</button>\r\n    \r\n</div>\r\n";
 },"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
