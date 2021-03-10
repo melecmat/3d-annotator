@@ -48,7 +48,7 @@ function initApp() {
     mainWindow.loadFile('welcome_screen.html');
 
     // Open the DevTools.
-    //mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function(e) {
         const choice = require('electron').dialog.showMessageBoxSync(this,
@@ -139,6 +139,24 @@ ipcMain.on("readRelative", function (e, pat) {
     mainWindow.webContents.send("requestedFile", JSON.parse(fs.readFileSync(currentPath + "/" + pat)));
 });
 
+ipcMain.on("eraseGalleries", (e, galleries) => {
+    for (gallery of galleries) {
+        // remove in actual folder
+        // TODO -- here might be problem that galleries path begins with /moric/galleries 
+        console.log("Gonna erase galleries that are not needed anymore");
+        console.log("gallery json src")
+        console.log(gallery.json_gallery_src);
+        //console.log("path sep")
+        gal_path = gallery.json_gallery_src.split("/").slice(1).join("/"); // just remove the first folder eg moric/
+        console.log("gal path")
+        console.log(gal_path);
+        console.log(path.join(currentPath, gal_path));
+        rmDir(path.join(currentPath, gal_path));
+        // remove in temp folder -- maybe not needed?
+
+    }
+});
+
 // Communication with gallery window
 
 ipcMain.on("initGalleryWindow", function (e, info) {
@@ -160,7 +178,20 @@ ipcMain.on("saveGallery", (e, data) => {
     // TODO -- loading popup
     // get actual filenames instead of paths
     //console.log(data.newly_added);
-    
+    console.log(data);
+    if (Object.keys(data.json).length === 0) {
+        // empty means either empty gallery was created, or the gallery was emptied out-- I should try to erase it then
+        // do it by a trick, send it to annotation window, and put erase into parent_id
+        
+        
+        mainWindow.webContents.send("galleryCreated", {
+            "json_gallery_src": lastFold + "/galleries/" + galleryName,
+            "parent_id": "erase_request_id", // filled by annotation_window in renderer
+            "has_full_size_version": true
+        });
+        galleryWindow.destroy();
+        return;
+    }
 
     newly_added = data.newly_added.map((pat) => {
         //console.log(pat);
@@ -199,12 +230,13 @@ ipcMain.on("saveGallery", (e, data) => {
     });
     
     // let mainWindow know
+    // TODO -- here the deletion of a picture out of gallery does not get propagated
     mainWindow.webContents.send("galleryCreated", {
         "json_gallery_src": lastFold + "/galleries/" + galleryName,
         "parent_id": "", // filled by annotation_window in renderer
         "has_full_size_version": true
     });
-    galleryWindow.close();
+    galleryWindow.destroy();
 });
 
 /**
@@ -227,20 +259,13 @@ function createGalleryWindow() {
             type: 'question',
             buttons: ['Yes', 'No'],
             title: 'Confirm',
-            message: 'Do you want to save this gallery?'
+            message: 'Do you want to close the window and loose all recent changes?'
           });
         if (choice === 0) {
-            // save gallery and end
-            galleryWindow.webContents.executeJavascript("saveGallery()");
-            //ipcMain.once("gallerySaved", (e, info) => {
-            //mainWindow.webContents.send("gallerySaved", info);
-            //galleryWindow.close();
-            //});
+            // maybe doing nothing is not good enough :D
             
-            e.preventDefault();
         } else {
-            // just closes -- destroy all that has been done in gallery
-            // TODO
+            e.preventDefault();
         }
     });
 
@@ -248,7 +273,8 @@ function createGalleryWindow() {
         galleryWindow.show();
     });
 
-    //galleryWindow.webContents.openDevTools();
+    // Open dev tools for the window
+    galleryWindow.webContents.openDevTools();
 
     galleryWindow.loadFile("html/galleryConfig.html");
 }

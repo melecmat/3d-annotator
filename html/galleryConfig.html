@@ -7,7 +7,7 @@
         <title> Configure Gallery </title>
       </head>
       <body>
-        <button id="save_gallery" onclick="saveGallery()">Save Changes</button>
+        <button id="save_gallery" onclick="saveGallery()">Save Changes and Close</button>
        <button id="add_files" onclick="add_files()">Add Files</button>
 
        <div id="loader" class="invisible"></div>
@@ -87,6 +87,8 @@
         var gallery_path;
         var newly_added = [];
 
+        var current_tmp_path = "";
+
         // object of {"img.jpg": "annotation", ..}
         var annotation_obj; 
 
@@ -97,6 +99,7 @@
             gallery_path = data.gallery_path;
             console.log("gallery_path " + gallery_path);
             empty_annot = data.empty_annot;
+            current_tmp_path = data.current_tmp_path;
             
             // put the datat into template:::
             process_gallery_json();
@@ -192,6 +195,9 @@
                     return;
                 }
             });
+
+            // TODO --- remove also in temp!!!!!
+
             console.log("img_config" + img_id);
             document.getElementById("img_config" + img_id).remove();
 
@@ -304,6 +310,7 @@
             // just send data to main
             // update annotation obj
             // TODO -- watch out, doesnt work ---- next thing!!!!
+            
             for (annot in annotation_obj) {
                 var ret = {};
                 console.log(annot);

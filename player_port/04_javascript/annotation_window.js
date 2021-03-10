@@ -276,10 +276,16 @@ var AnnotationWindow = (function () {
         annotation_button.parentNode.removeChild(annotation_button);
         annotation.parentNode.removeChild(annotation);
         delete json_obj.annotations[annotation_id];
+        // delete galleries 
+        galleries_to_erase = json_obj.galleries.filter(gallery => gallery.parent_id == annotation_id);
+        ipcRenderer.send("eraseGalleries", galleries_to_erase);
+        json_obj.galleries = json_obj.galleries.filter(gallery => gallery.parent_id != annotation_id); // keep only other galleries
+
         ipcRenderer.send("focusMain", null);
         is_dirty = true;
         // TODO save
         //save_to_local_storage();
+        save_json();
     }
 
     /**
@@ -388,12 +394,37 @@ var AnnotationWindow = (function () {
                 // SWAP
                 json_obj.annotations[current_annotation] = JSON.parse(JSON.stringify(json_obj.annotations[new_id])); // doing deep copy
                 change_popup(current_annotation, json_obj.annotations[new_id]);
+                // swap galleries
+                json_obj.galleries = json_obj.galleries.map(gallery => {
+                    if (gallery.parent_id == new_id) {
+                        document.getElementById("gal_wrapper" + new_id).remove();
+                        gallery.parent_id = current_annotation;
+                        GalleryControl.build_gallery(gallery);
+                    } else if (gallery.parent_id == current_annotation) {
+                        document.getElementById("gal_wrapper" + current_annotation).remove();
+                        gallery.parent_id = new_id;
+                        GalleryControl.build_gallery(gallery);
+                    }
+                    
+                    return gallery;
+                });
+                console.log(json_obj.galleries);
+
                 current_annotation = new_id;
             }
         // if we need to just rename the number
         } else {
             delete json_obj.annotations[current_annotation];
             var rendered_annot = document.getElementById("rendered" + current_annotation);
+
+            json_obj.galleries = json_obj.galleries.map(gallery => {
+                if (gallery.parent_id == current_annotation) {
+                    document.getElementById("gal_wrapper" + current_annotation).remove();
+                    gallery.parent_id = new_id;
+                    GalleryControl.build_gallery(gallery);
+                }
+                return gallery;
+            });
             
             // just putting new number
             rendered_annot.setAttribute("id", "rendered"+new_id);
@@ -428,6 +459,7 @@ var AnnotationWindow = (function () {
         document.getElementById("make_gallery").classList.remove("visible");
 
         close_windows();
+        App.save_json();
     }
 
     /** 
@@ -613,9 +645,19 @@ var AnnotationWindow = (function () {
 
         // wait for it to provide info about gallery whereabouts
         ipcRenderer.once("galleryCreated", function (e, gallery_info) {
+            if (gallery_info.parent_id == "erase_request_id") {
+                // here it means I should not do anything -- user created an empty gallery
+                return;
+            }
+
             gallery_info.parent_id = id;
             
+            // TODO this could be a problem if I am creating the gallery second time -> That should be prevented
             json_obj.galleries.push(gallery_info);
+
+            // TODO -- now this here should save the json and then build gallery,
+            // therefore my problem should pop up even if I do not refresh, but it doesnt -- why??
+
             // save json
             ipcRenderer.send("save_json", json_obj);
             // reload -- maybe -- or more effective -- start only gallery
@@ -651,15 +693,32 @@ var AnnotationWindow = (function () {
     
             // wait for it to provide info about gallery whereabouts
             ipcRenderer.once("galleryCreated", function (e, gallery_info) {
-                gallery_info.parent_id = id;
+                if (gallery_info.parent_id == "erase_request_id") {
+                    // here it means I should erase the gallery, as user emptied it out
+                    galleries_to_erase = json_obj.galleries.filter(gallery => gallery.parent_id == parentID);
+                    json_obj.galleries = json_obj.galleries.filter(gallery => gallery.parent_id != parentID);
+                    ipcRenderer.send("eraseGalleries", galleries_to_erase); 
+                    is_dirty = true;
+                    save_json();
+                    // remove the acual gallery:
+                    document.getElementById("gal_wrapper" + parentID).remove();
+                    //setTimeout(GalleryControl.build_gallery(gallery_info), 2000);
+                    return;
+                }
+                gallery_info.parent_id = parentID; // TODO WHAT IS THIS ID variable???? -- i see only parentID before..
+                // I can see this variable set in previous function but not this one???
+                // if it is the same, it comes from html, current edited
                 //json_obj.galleries[galName] = gallery_info;
                 //console.log(gallery_info);
                 // reload -- maybe -- or more effective -- start only gallery
                 // save the main json
                 //ipcRenderer.send("save_json", json_obj);
-                var el = document.getElementById('gal_wrapper' + id);
+                var el = document.getElementById('gal_wrapper' + parentID);
                 el.remove();
                 console.log("removed");
+                // PROBLEM -- after erasing a picture, we need to refresh when we should not need to
+                // this is weird as the gallery should be rebuild without the said picture???
+                // TODO actually maybe I erase only the picture in the real path and not the temp!!!
                 setTimeout(GalleryControl.build_gallery(gallery_info), 2000);
             });
         });
