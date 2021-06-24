@@ -48,7 +48,7 @@ function initApp() {
     mainWindow.loadFile('welcome_screen.html');
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function(e) {
         const choice = require('electron').dialog.showMessageBoxSync(this,
@@ -274,7 +274,7 @@ function createGalleryWindow() {
     });
 
     // Open dev tools for the window
-    galleryWindow.webContents.openDevTools();
+    //galleryWindow.webContents.openDevTools();
 
     galleryWindow.loadFile("html/galleryConfig.html");
 }
